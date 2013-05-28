@@ -1,0 +1,28 @@
+class Traction.View extends Backbone.View
+  constructor: (options) ->
+    @children = new Traction.ViewCollection()
+    super
+    @renderer = @buildRenderer()
+
+  buildRenderer: ->
+    if @template
+      new Traction.Rendering.TemplateStrategy({source: @template, renderWithin: @el})
+    else if @options.el
+      new Traction.Rendering.PrerenderedStrategy({renderWithin: @el})
+    else
+      new Traction.Rendering.AppendStrategy({renderWithin: @el})
+
+  proxyEvent: (target, event, newEvent) ->
+    callback = =>
+      args = Array.prototype.slice.call(arguments)
+      args.unshift(newEvent || event)
+      @trigger.apply(@, args)
+
+    @listenTo target, event, callback
+
+  render: ->
+    @renderer.render(binding: @binding)
+    @renderer.outlet(@children.render())
+    @
+
+Traction.View.extend = (klass) -> _.extend(@prototype, klass.prototype)
