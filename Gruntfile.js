@@ -13,10 +13,10 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-      specs: {
-        files: ['src/**/*.js', 'spec/**/*.js'],
-        tasks: 'jasmine:traction'
-      }
+      compile: {
+        files: ['coffee/**/*.coffee'],
+        tasks: ['exec:compile', 'jasmine:traction']
+      },
     },
     jasmine: {
       traction: {
@@ -30,9 +30,27 @@ module.exports = function(grunt) {
     },
     exec: {
       compile: {
-        command: "coffee --output ./ --watch coffee/",
-        stdout: false,
-        stderr: false
+        command: "coffee --output ./ --compile coffee/",
+        stdout: true,
+        stderr: true
+      },
+    },
+    concat: {
+      options: {
+        separator: ';'
+      },
+      dist: {
+        src: [
+          'src/core.js',
+          'src/computedAttributes.js',
+          'src/view.js',
+          'src/viewCollection.js',
+          'src/rendering/nodeStrategy.js',
+          'src/rendering/appendStrategy.js',
+          'src/rendering/prerenderedStrategy.js',
+          'src/rendering/templateStrategy.js'
+        ],
+        dest: 'traction.js'
       }
     }
   });
@@ -42,7 +60,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 
   // Default task(s).
-  grunt.registerTask('default', ['exec:compile', 'watch']);
+  grunt.registerTask('default', 'watch:compile');
 };

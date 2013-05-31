@@ -1,29 +1,31 @@
 class Traction.Rendering.TemplateStrategy extends Traction.Rendering.NodeStrategy
-  # templatePath: "templates"
-  # source: ""
-  #
-  # constructor: (options) ->
-  #   @setElement(options.renderWithin)
-  #   @source = JST["#{@templatePath}/#{options.source}"]
-  #   super
-  #
-  # render: (options) ->
-  #   @$el.empty()
-  #   @template.applyBindings(@model)
-  #   @$el.append @template(options)
-  #
-  #
-  # template: (options) ->
-  #   @source(
-  #     _.extend(options || {}, {
-  #       context: @context
-  #       # helper: DiamondFreight.TemplateHelper
-  #       outlet: @_constructOutlet
-  #     })
-  #   )
-  #
-  # # Private
-  #
-  # _constructOutlet: (outletName)->
-  #   outletName ||= ""
-  #   "<output data-outlet='#{outletName}'></output>"
+  events: ->
+    "submit form[data-emit]": "emit"
+    "click [data-emit]": "emit"
+
+  constructor: (options) ->
+    @setElement(options.renderWithin)
+    @template = @findTemplate(options.template)
+    super
+
+  findTemplate: (name) ->
+    templatePath = "templates"
+    JST["#{templatePath}/#{name}"]
+
+  call: (options = {}) ->
+    @$el.empty()
+    @el.innerHTML = @_template()
+    @_applyBindings(options.bindTo)
+    @_outlet(options.children)
+
+  buildOutlet: (outletName)->
+    outletName ||= ""
+    "<output data-outlet='#{outletName}'></output>"
+
+  # Private
+
+  _template: (options) ->
+    @template _.extend(options || {}, @_defaultTemplateOptions())
+
+  _defaultTemplateOptions: ->
+    {outlet: @buildOutlet}

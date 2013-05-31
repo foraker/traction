@@ -1,5 +1,1 @@
-`
-Traction = {
-  Rendering: {}
-}
-`
+`Traction = {Rendering: {}, Bindings: {}}`

@@ -7,56 +7,52 @@
 
     __extends(TemplateStrategy, _super);
 
-    TemplateStrategy.prototype.templatePath = "templates";
-
-    TemplateStrategy.prototype.source = "";
+    TemplateStrategy.prototype.events = function() {
+      return {
+        "submit form[data-emit]": "emit",
+        "click [data-emit]": "emit"
+      };
+    };
 
     function TemplateStrategy(options) {
       this.setElement(options.renderWithin);
-      this.source = JST["" + this.templatePath + "/" + options.source];
+      this.template = this.findTemplate(options.template);
       TemplateStrategy.__super__.constructor.apply(this, arguments);
     }
 
-    TemplateStrategy.prototype.render = function(options) {
+    TemplateStrategy.prototype.findTemplate = function(name) {
+      var templatePath;
+      templatePath = "templates";
+      return JST["" + templatePath + "/" + name];
+    };
+
+    TemplateStrategy.prototype.call = function(options) {
+      if (options == null) {
+        options = {};
+      }
       this.$el.empty();
-      this.template.applyBindings(this.model);
-      return this.$el.append(this.template(options));
+      this.el.innerHTML = this._template();
+      this._applyBindings(options.bindTo);
+      return this._outlet(options.children);
     };
 
-    TemplateStrategy.prototype.outlet = function(children) {
-      var _this = this;
-      return this.$("output[data-outlet]").each(function(index, el) {
-        var childEls, name;
-        if (name = $(el).data("outlet")) {
-          return $(el).replaceWith(children[name].el);
-        } else {
-          childEls = _.map(children, function(child, name) {
-            return child.el;
-          });
-          return $(el).replaceWith(childEls);
-        }
-      });
-    };
-
-    TemplateStrategy.prototype.applyBindings = function(model) {
-      var _this = this;
-      return this.$("[data-bind]").each(function(index, el) {});
-    };
-
-    TemplateStrategy.prototype.template = function(options) {
-      return this.source(_.extend(options || {}, {
-        context: this.context,
-        outlet: this._constructOutlet
-      }));
-    };
-
-    TemplateStrategy.prototype._constructOutlet = function(outletName) {
+    TemplateStrategy.prototype.buildOutlet = function(outletName) {
       outletName || (outletName = "");
       return "<output data-outlet='" + outletName + "'></output>";
     };
 
+    TemplateStrategy.prototype._template = function(options) {
+      return this.template(_.extend(options || {}, this._defaultTemplateOptions()));
+    };
+
+    TemplateStrategy.prototype._defaultTemplateOptions = function() {
+      return {
+        outlet: this.buildOutlet
+      };
+    };
+
     return TemplateStrategy;
 
-  })(Backbone.View);
+  })(Traction.Rendering.NodeStrategy);
 
 }).call(this);

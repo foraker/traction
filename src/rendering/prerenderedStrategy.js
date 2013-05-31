@@ -13,6 +13,6 @@
 
     return PrerenderedStrategy;
 
-  })(Backbone.View);
+  })(Traction.Rendering.NodeStrategy);
 
 }).call(this);
