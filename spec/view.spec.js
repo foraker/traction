@@ -86,37 +86,50 @@
         return expect(this.parent.trigger).toHaveBeenCalledWith("renamed-child-event", "child-arg-1", "child-arg-2");
       });
     });
-    return describe("#render", function() {
+    describe("#render", function() {
       return beforeEach(function() {
-        this.testView = new Traction.View();
-        this.testView.renderer = {
+        this.view = new Traction.View();
+        this.view.renderer = {
           render: function() {
             return this;
           }
         };
-        this.testView.children = {
+        this.view.children = {
           render: function() {}
         };
         it("renders via the renderer with the proper binding", function() {
-          spyOn(this.testView.renderer, "render");
-          this.testView.render();
-          return expect(this.testView.renderer.render).toHaveBeenCalledWith({
-            binding: this.testView.binding
+          spyOn(this.view.renderer, "render");
+          this.view.render();
+          return expect(this.view.renderer.render).toHaveBeenCalledWith({
+            binding: this.view.binding
           });
         });
         it("renders its children", function() {
-          spyOn(this.testView.children, "render");
-          this.testView.render();
-          return expect(this.testView.children.render).toHaveBeenCalled();
+          spyOn(this.view.children, "render");
+          this.view.render();
+          return expect(this.view.children.render).toHaveBeenCalled();
         });
         it("outlets its children to the renderer", function() {
-          spyOn(this.testView.renderer, "outlet");
-          this.testView.render();
-          return expect(this.testView.renderer.outlet).toHaveBeenCalledWith(this.testView.children);
+          spyOn(this.view.renderer, "outlet");
+          this.view.render();
+          return expect(this.view.renderer.outlet).toHaveBeenCalledWith(this.view.children);
         });
         return it("returns itself", function() {
-          return expect(this.testView.render()).toBe(this.testView);
+          return expect(this.view.render()).toBe(this.view);
         });
+      });
+    });
+    return describe("#remove", function() {
+      return it("removes each child", function() {
+        var child, view;
+        view = new Traction.View();
+        child = {
+          remove: function() {}
+        };
+        view.children.add(child);
+        spyOn(child, "remove");
+        view.remove();
+        return expect(child.remove).toHaveBeenCalled();
       });
     });
   });

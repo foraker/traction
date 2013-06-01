@@ -1,8 +1,4 @@
 class Traction.Rendering.TemplateStrategy extends Traction.Rendering.NodeStrategy
-  events: ->
-    "submit form[data-emit]": "emit"
-    "click [data-emit]": "emit"
-
   constructor: (options) ->
     @setElement(options.renderWithin)
     @template = @findTemplate(options.template)
@@ -10,7 +6,7 @@ class Traction.Rendering.TemplateStrategy extends Traction.Rendering.NodeStrateg
 
   findTemplate: (name) ->
     templatePath = "templates"
-    JST["#{templatePath}/#{name}"]
+    JST["#{templatePath}/#{name}"] || throw("Missing template: #{name}")
 
   call: (options = {}) ->
     @$el.empty()

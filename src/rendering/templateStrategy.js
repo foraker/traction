@@ -7,13 +7,6 @@
 
     __extends(TemplateStrategy, _super);
 
-    TemplateStrategy.prototype.events = function() {
-      return {
-        "submit form[data-emit]": "emit",
-        "click [data-emit]": "emit"
-      };
-    };
-
     function TemplateStrategy(options) {
       this.setElement(options.renderWithin);
       this.template = this.findTemplate(options.template);
@@ -23,7 +16,9 @@
     TemplateStrategy.prototype.findTemplate = function(name) {
       var templatePath;
       templatePath = "templates";
-      return JST["" + templatePath + "/" + name];
+      return JST["" + templatePath + "/" + name] || (function() {
+        throw "Missing template: " + name;
+      })();
     };
 
     TemplateStrategy.prototype.call = function(options) {

@@ -50,6 +50,13 @@
       return this;
     };
 
+    View.prototype.remove = function() {
+      View.__super__.remove.apply(this, arguments);
+      return this.children.each(function(child) {
+        return child.remove();
+      });
+    };
+
     return View;
 
   })(Backbone.View);

@@ -65,24 +65,34 @@ describe "view", ->
 
   describe "#render", ->
     beforeEach ->
-      @testView = new Traction.View()
-      @testView.renderer = {render: -> @}
-      @testView.children = {render: ->}
+      @view = new Traction.View()
+      @view.renderer = {render: -> @}
+      @view.children = {render: ->}
 
       it "renders via the renderer with the proper binding", ->
-        spyOn(@testView.renderer, "render")
-        @testView.render()
-        expect(@testView.renderer.render).toHaveBeenCalledWith(binding: @testView.binding)
+        spyOn(@view.renderer, "render")
+        @view.render()
+        expect(@view.renderer.render).toHaveBeenCalledWith(binding: @view.binding)
 
       it "renders its children", ->
-        spyOn(@testView.children, "render")
-        @testView.render()
-        expect(@testView.children.render).toHaveBeenCalled()
+        spyOn(@view.children, "render")
+        @view.render()
+        expect(@view.children.render).toHaveBeenCalled()
 
       it "outlets its children to the renderer", ->
-        spyOn(@testView.renderer, "outlet")
-        @testView.render()
-        expect(@testView.renderer.outlet).toHaveBeenCalledWith(@testView.children)
+        spyOn(@view.renderer, "outlet")
+        @view.render()
+        expect(@view.renderer.outlet).toHaveBeenCalledWith(@view.children)
 
       it "returns itself", ->
-        expect(@testView.render()).toBe @testView
+        expect(@view.render()).toBe @view
+
+  describe "#remove", ->
+    it "removes each child", ->
+      view = new Traction.View()
+      child = {remove: ->}
+      view.children.add(child)
+      spyOn(child, "remove")
+      view.remove()
+      expect(child.remove).toHaveBeenCalled()
+

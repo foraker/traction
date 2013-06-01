@@ -1,4 +1,7 @@
 class Traction.Rendering.NodeStrategy extends Backbone.View
+  events:
+    "click :not(form)[data-emit]": "_emit"
+    "submit form[data-emit]": "_emit"
 
   # Private
 
@@ -14,3 +17,7 @@ class Traction.Rendering.NodeStrategy extends Backbone.View
     @$("[data-bind]").each (index, el) =>
       for specification in $(el).data("bind").split(" ")
         Traction.Bindings.Factory(el, specification).bindTo(binding)
+
+  _emit: (event) ->
+    eventNames = event.currentTarget.getAttribute("data-emit").split(" ")
+    @$el.trigger(eventName) for eventName in eventNames

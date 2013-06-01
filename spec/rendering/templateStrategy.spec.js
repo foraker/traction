@@ -2,13 +2,25 @@
 (function() {
 
   describe("template rendering strategy", function() {
-    beforeEach(function() {
-      return window.JST = {};
+    var createInstance;
+    JST["templates/source/path"] = function() {};
+    createInstance = function(options) {
+      if (options == null) {
+        options = {};
+      }
+      return new Traction.Rendering.TemplateStrategy(_.extend(options, {
+        template: "source/path"
+      }));
+    };
+    describe("shared behavior", function() {
+      return jasmine.itShouldBehaveLike("a node rendering strategy", {
+        createInstance: createInstance
+      });
     });
     it("assigns its element", function() {
       var element, renderer;
       element = $("<div></div>")[0];
-      renderer = new Traction.Rendering.TemplateStrategy({
+      renderer = createInstance({
         renderWithin: element
       });
       return expect(renderer.el).toEqual(element);
@@ -17,15 +29,13 @@
       var renderer, templateFunction;
       templateFunction = function() {};
       JST["templates/source/path"] = templateFunction;
-      renderer = new Traction.Rendering.TemplateStrategy({
-        template: "source/path"
-      });
+      renderer = createInstance();
       return expect(renderer.template).toBe(templateFunction);
     });
     return describe("#call", function() {
       beforeEach(function() {
         this.element = $("<div>original content</div>")[0];
-        this.renderer = new Traction.Rendering.TemplateStrategy({
+        this.renderer = createInstance({
           renderWithin: this.element
         });
         return this.renderer.template = function() {
@@ -90,39 +100,41 @@
           return expect(this.binding.bindTo).toHaveBeenCalledWith(model);
         });
       });
-      it("outlets all children", function() {
-        var child;
-        this.renderer.template = function() {
-          return "<script data-outlet=''></script>";
-        };
-        child = {
-          el: "<p>child content</p>"
-        };
-        this.renderer.call({
-          children: {
-            childName: child
-          }
+      return describe("outletting", function() {
+        it("outlets all children", function() {
+          var child;
+          this.renderer.template = function() {
+            return "<script data-outlet=''></script>";
+          };
+          child = {
+            el: "<p>child content</p>"
+          };
+          this.renderer.call({
+            children: {
+              childName: child
+            }
+          });
+          return expect(this.renderer.el.innerHTML).toEqual("<p>child content</p>");
         });
-        return expect(this.renderer.el.innerHTML).toEqual("<p>child content</p>");
-      });
-      return it("can outlet specific children", function() {
-        var child1, child2;
-        this.renderer.template = function() {
-          return "<script data-outlet='child1'></script>\n<span><script data-outlet='child2'></script></span>";
-        };
-        child1 = {
-          el: "<p>Child 1 Content</p>"
-        };
-        child2 = {
-          el: "<p>Child 2 Content</p>"
-        };
-        this.renderer.call({
-          children: {
-            child1: child1,
-            child2: child2
-          }
+        return it("can outlet specific children", function() {
+          var child1, child2;
+          this.renderer.template = function() {
+            return "<script data-outlet='child1'></script>\n<span><script data-outlet='child2'></script></span>";
+          };
+          child1 = {
+            el: "<p>Child 1 Content</p>"
+          };
+          child2 = {
+            el: "<p>Child 2 Content</p>"
+          };
+          this.renderer.call({
+            children: {
+              child1: child1,
+              child2: child2
+            }
+          });
+          return expect(this.renderer.el.innerHTML).toEqual("<p>Child 1 Content</p>\n<span><p>Child 2 Content</p></span>");
         });
-        return expect(this.renderer.el.innerHTML).toEqual("<p>Child 1 Content</p>\n<span><p>Child 2 Content</p></span>");
       });
     });
   });

@@ -7,9 +7,18 @@
 
     __extends(PrerenderedStrategy, _super);
 
-    function PrerenderedStrategy() {
-      return PrerenderedStrategy.__super__.constructor.apply(this, arguments);
+    function PrerenderedStrategy(options) {
+      this.setElement(options.renderWithin);
+      PrerenderedStrategy.__super__.constructor.apply(this, arguments);
     }
+
+    PrerenderedStrategy.prototype.call = function(options) {
+      if (options == null) {
+        options = {};
+      }
+      this._applyBindings(options.bindTo);
+      return this._outlet(options.children);
+    };
 
     return PrerenderedStrategy;
 

@@ -1,26 +1,27 @@
 describe "template rendering strategy", ->
-  beforeEach ->
-    window.JST = {}
+  JST["templates/source/path"] = ->
+
+  createInstance = (options = {}) ->
+    new Traction.Rendering.TemplateStrategy(_.extend(options, {template: "source/path"}))
+
+  describe "shared behavior", ->
+    jasmine.itShouldBehaveLike("a node rendering strategy", {createInstance: createInstance})
 
   it "assigns its element", ->
     element = $("<div></div>")[0]
-    renderer = new Traction.Rendering.TemplateStrategy({
-      renderWithin: element
-    })
+    renderer = createInstance({renderWithin: element})
     expect(renderer.el).toEqual element
 
   it "finds the JST template function source", ->
     templateFunction = ->
     JST["templates/source/path"] = templateFunction
-    renderer = new Traction.Rendering.TemplateStrategy({
-      template: "source/path"
-    })
+    renderer = createInstance()
     expect(renderer.template).toBe templateFunction
 
   describe "#call", ->
     beforeEach ->
       @element = $("<div>original content</div>")[0]
-      @renderer = new Traction.Rendering.TemplateStrategy({renderWithin: @element})
+      @renderer = createInstance({renderWithin: @element})
       @renderer.template = -> "templated content"
 
     it "empties the existing node contents", ->
@@ -75,23 +76,24 @@ describe "template rendering strategy", ->
         @renderer.call(bindTo: model)
         expect(@binding.bindTo).toHaveBeenCalledWith(model)
 
-    it "outlets all children", ->
-      @renderer.template = -> "<script data-outlet=''></script>"
-      child = {el: "<p>child content</p>"}
-      @renderer.call(children: {childName: child})
-      expect(@renderer.el.innerHTML).toEqual "<p>child content</p>"
+    describe "outletting", ->
+      it "outlets all children", ->
+        @renderer.template = -> "<script data-outlet=''></script>"
+        child = {el: "<p>child content</p>"}
+        @renderer.call(children: {childName: child})
+        expect(@renderer.el.innerHTML).toEqual "<p>child content</p>"
 
-    it "can outlet specific children", ->
-      @renderer.template = -> """
-        <script data-outlet='child1'></script>
-        <span><script data-outlet='child2'></script></span>
-      """
+      it "can outlet specific children", ->
+        @renderer.template = -> """
+          <script data-outlet='child1'></script>
+          <span><script data-outlet='child2'></script></span>
+        """
 
-      child1 = {el: "<p>Child 1 Content</p>"}
-      child2 = {el: "<p>Child 2 Content</p>"}
+        child1 = {el: "<p>Child 1 Content</p>"}
+        child2 = {el: "<p>Child 2 Content</p>"}
 
-      @renderer.call(children: {child1: child1, child2: child2})
-      expect(@renderer.el.innerHTML).toEqual("""
-        <p>Child 1 Content</p>
-        <span><p>Child 2 Content</p></span>
-      """)
+        @renderer.call(children: {child1: child1, child2: child2})
+        expect(@renderer.el.innerHTML).toEqual("""
+          <p>Child 1 Content</p>
+          <span><p>Child 2 Content</p></span>
+        """)

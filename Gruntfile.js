@@ -23,7 +23,7 @@ module.exports = function(grunt) {
         src: ['src/core.js', 'src/**/*.js'],
         options: {
           specs: 'spec/**/*spec.js',
-          helpers: 'spec/*Helper.js',
+          helpers: ['spec/support/specHelper.js','spec/support/**/*.js'],
           vendor: ["vendor/jquery-2.0.1.js", "vendor/underscore.js", "vendor/backbone.js"]
         }
       }

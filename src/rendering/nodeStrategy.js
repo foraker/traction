@@ -11,6 +11,11 @@
       return NodeStrategy.__super__.constructor.apply(this, arguments);
     }
 
+    NodeStrategy.prototype.events = {
+      "click :not(form)[data-emit]": "_emit",
+      "submit form[data-emit]": "_emit"
+    };
+
     NodeStrategy.prototype._outlet = function(children) {
       var _this = this;
       return this.$("script[data-outlet]").each(function(index, el) {
@@ -38,6 +43,17 @@
         }
         return _results;
       });
+    };
+
+    NodeStrategy.prototype._emit = function(event) {
+      var eventName, eventNames, _i, _len, _results;
+      eventNames = event.currentTarget.getAttribute("data-emit").split(" ");
+      _results = [];
+      for (_i = 0, _len = eventNames.length; _i < _len; _i++) {
+        eventName = eventNames[_i];
+        _results.push(this.$el.trigger(eventName));
+      }
+      return _results;
     };
 
     return NodeStrategy;
