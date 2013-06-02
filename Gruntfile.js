@@ -13,7 +13,9 @@ module.exports = function(grunt) {
     'src/bindings/contentBinding.js',
     'src/bindings/formattedContentBinding.js',
     'src/bindings/attributeBinding.js',
-    'src/bindings/factory.js'
+    'src/bindings/factory.js',
+    'src/rails/model.js',
+    'src/rails/collection.js'
   ]
 
   grunt.initConfig({

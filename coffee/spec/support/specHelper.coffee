@@ -10,3 +10,6 @@ jasmine.itShouldBehaveLike = (sharedExampleGroupName, options) ->
 jasmine.sharedExamplesFor = (sharedExampleGroupName, examples) ->
   jasmine.SharedExamples[sharedExampleGroupName] = examples
 
+jasmine.Matchers.prototype.toBeInstanceOf = (expected) ->
+  @actual instanceof expected
+

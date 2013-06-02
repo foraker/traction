@@ -19,4 +19,8 @@
     return jasmine.SharedExamples[sharedExampleGroupName] = examples;
   };
 
+  jasmine.Matchers.prototype.toBeInstanceOf = function(expected) {
+    return this.actual instanceof expected;
+  };
+
 }).call(this);
