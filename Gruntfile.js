@@ -1,6 +1,21 @@
 module.exports = function(grunt) {
+  var SRC = [
+    'src/core.js',
+    'src/computedAttributes.js',
+    'src/view.js',
+    'src/viewCollection.js',
+    'src/template_helpers/formatting',
+    'src/rendering/nodeStrategy.js',
+    'src/rendering/appendStrategy.js',
+    'src/rendering/prerenderedStrategy.js',
+    'src/rendering/templateStrategy.js',
+    'src/bindings/binding.js',
+    'src/bindings/contentBinding.js',
+    'src/bindings/formattedContentBinding.js',
+    'src/bindings/attributeBinding.js',
+    'src/bindings/factory.js'
+  ]
 
-  // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     uglify: {
@@ -20,17 +35,22 @@ module.exports = function(grunt) {
     },
     jasmine: {
       traction: {
-        src: ['src/core.js', 'src/**/*.js'],
+        src: SRC,
         options: {
           specs: 'spec/**/*spec.js',
           helpers: ['spec/support/specHelper.js','spec/support/**/*.js'],
-          vendor: ["vendor/jquery-2.0.1.js", "vendor/underscore.js", "vendor/backbone.js"]
+          vendor: [
+            "vendor/jquery-2.0.1.js",
+            "vendor/underscore.js",
+            "vendor/backbone.js",
+            "vendor/underscore.string.js"
+          ]
         }
       }
     },
     exec: {
       compile: {
-        command: "coffee --output ./ --compile coffee/",
+        command: "rm -rf ./src ./spec && coffee --output ./ --compile coffee/",
         stdout: true,
         stderr: true
       },
@@ -40,28 +60,17 @@ module.exports = function(grunt) {
         separator: ';'
       },
       dist: {
-        src: [
-          'src/core.js',
-          'src/computedAttributes.js',
-          'src/view.js',
-          'src/viewCollection.js',
-          'src/rendering/nodeStrategy.js',
-          'src/rendering/appendStrategy.js',
-          'src/rendering/prerenderedStrategy.js',
-          'src/rendering/templateStrategy.js'
-        ],
+        src: SRC,
         dest: 'traction.js'
       }
     }
   });
 
-  // Load plugins
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
 
-  // Default task(s).
   grunt.registerTask('default', 'watch:compile');
 };

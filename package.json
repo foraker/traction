@@ -10,7 +10,8 @@
   "author": "Ben Eddy",
   "license": "BSD",
   "dependencies": {
-    "backbone": "~1.0.0"
+    "backbone": "~1.0.0",
+    "underscore.string": "~2.3.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
