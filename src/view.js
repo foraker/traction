@@ -51,7 +51,11 @@
     };
 
     View.prototype.remove = function() {
+      var _base;
       View.__super__.remove.apply(this, arguments);
+      if (typeof (_base = this.renderer).destroy === "function") {
+        _base.destroy();
+      }
       return this.children.each(function(child) {
         return child.remove();
       });

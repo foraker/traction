@@ -120,15 +120,26 @@
       });
     });
     return describe("#remove", function() {
+      beforeEach(function() {
+        return this.view = new Traction.View();
+      });
+      it("destroys the renderer", function() {
+        this.view.renderer.destroy = jasmine.createSpy();
+        this.view.remove();
+        return expect(this.view.renderer.destroy).toHaveBeenCalled();
+      });
+      it("handles renderers lacking a destroy method", function() {
+        this.view.renderer.destroy = void 0;
+        return this.view.remove();
+      });
       return it("removes each child", function() {
-        var child, view;
-        view = new Traction.View();
+        var child;
         child = {
           remove: function() {}
         };
-        view.children.add(child);
+        this.view.children.add(child);
         spyOn(child, "remove");
-        view.remove();
+        this.view.remove();
         return expect(child.remove).toHaveBeenCalled();
       });
     });

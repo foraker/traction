@@ -88,11 +88,22 @@ describe "view", ->
         expect(@view.render()).toBe @view
 
   describe "#remove", ->
+    beforeEach ->
+      @view = new Traction.View()
+
+    it "destroys the renderer", ->
+      @view.renderer.destroy = jasmine.createSpy()
+      @view.remove()
+      expect(@view.renderer.destroy).toHaveBeenCalled()
+
+    it "handles renderers lacking a destroy method", ->
+      @view.renderer.destroy = undefined
+      @view.remove() # no error thrown
+
     it "removes each child", ->
-      view = new Traction.View()
       child = {remove: ->}
-      view.children.add(child)
+      @view.children.add(child)
       spyOn(child, "remove")
-      view.remove()
+      @view.remove()
       expect(child.remove).toHaveBeenCalled()
 
