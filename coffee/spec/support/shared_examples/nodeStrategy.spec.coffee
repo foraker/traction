@@ -1,39 +1,48 @@
 jasmine.sharedExamplesFor "a node rendering strategy", (options) ->
-  it "triggers events on the rendered element when clicked", ->
-    element  = $("<div><a data-emit='delete:user'></a></div>")
-    renderer = options.createInstance({renderWithin: element})
-    callback = jasmine.createSpy()
+  describe "event binding", ->
+    it "triggers events on the rendered element when clicked", ->
+      element  = $("<div><a data-emit='delete:user'></a></div>")
+      renderer = options.createInstance({renderWithin: element})
+      callback = jasmine.createSpy()
 
-    element.on("delete:user", callback)
-    element.find("a").click()
+      element.on("delete:user", callback)
+      element.find("a").click()
 
-    expect(callback).toHaveBeenCalled()
+      expect(callback).toHaveBeenCalled()
 
-  it "can trigger multiple events", ->
-    element = $("<div><a data-emit='delete:user delete:account'></a></div>")
-    renderer = options.createInstance({renderWithin: element})
+    it "can trigger multiple events", ->
+      element = $("<div><a data-emit='delete:user delete:account'></a></div>")
+      renderer = options.createInstance({renderWithin: element})
 
-    callback1 = jasmine.createSpy()
-    callback2 = jasmine.createSpy()
+      callback1 = jasmine.createSpy()
+      callback2 = jasmine.createSpy()
 
-    element.on("delete:user", callback1)
-    element.on("delete:account", callback2)
-    element.find("a").click()
+      element.on("delete:user", callback1)
+      element.on("delete:account", callback2)
+      element.find("a").click()
 
-    expect(callback1).toHaveBeenCalled()
-    expect(callback2).toHaveBeenCalled()
+      expect(callback1).toHaveBeenCalled()
+      expect(callback2).toHaveBeenCalled()
 
-  describe "forms", ->
-    beforeEach ->
-      @element  = $("<div><form data-emit='create:user'></form></div>")
-      @renderer = options.createInstance({renderWithin: @element})
-      @callback = jasmine.createSpy()
-      @element.on("create:user", @callback)
+    describe "forms", ->
+      beforeEach ->
+        @element  = $("<div><form data-emit='create:user'></form></div>")
+        @renderer = options.createInstance({renderWithin: @element})
+        @callback = jasmine.createSpy()
+        @element.on("create:user", @callback)
 
-    it "does not trigger events on click", ->
-      @element.find("form").click()
-      expect(@callback).not.toHaveBeenCalled()
+      it "does not trigger events on click", ->
+        @element.find("form").click()
+        expect(@callback).not.toHaveBeenCalled()
 
-    it "triggers events on submission", ->
-      @element.find("form").submit()
-      expect(@callback).toHaveBeenCalled()
+      it "triggers events on submission", ->
+        @element.find("form").submit()
+        expect(@callback).toHaveBeenCalled()
+
+  describe "destroy", ->
+    it "removes all bindings", ->
+      renderer = options.createInstance()
+      binding = {destroy: jasmine.createSpy()}
+      renderer.bindings = [binding]
+      renderer.destroy()
+      expect(binding.destroy).toHaveBeenCalled()

@@ -1,4 +1,8 @@
 describe "formatted content binding", ->
+  jasmine.itShouldBehaveLike("a binding", {
+    describedClass: Traction.Bindings.FormattedContentBinding
+  })
+
   describe "#bindTo", ->
     element = $("<p></p>")[0]
     model   = new Backbone.Model({name: "Original Name"})

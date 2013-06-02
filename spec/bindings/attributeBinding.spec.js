@@ -2,6 +2,9 @@
 (function() {
 
   describe("attribute binding", function() {
+    jasmine.itShouldBehaveLike("a binding", {
+      describedClass: Traction.Bindings.AttributeBinding
+    });
     return describe("#bindTo", function() {
       beforeEach(function() {
         this.element = $("<p></p>")[0];

@@ -7,13 +7,20 @@
 
     __extends(NodeStrategy, _super);
 
-    function NodeStrategy() {
-      return NodeStrategy.__super__.constructor.apply(this, arguments);
-    }
-
     NodeStrategy.prototype.events = {
       "click :not(form)[data-emit]": "_emit",
       "submit form[data-emit]": "_emit"
+    };
+
+    function NodeStrategy() {
+      NodeStrategy.__super__.constructor.apply(this, arguments);
+      this.bindings = [];
+    }
+
+    NodeStrategy.prototype.destroy = function() {
+      return _.each(this.bindings, function(binding) {
+        return binding.destroy();
+      });
     };
 
     NodeStrategy.prototype._outlet = function(children) {
@@ -39,7 +46,7 @@
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           specification = _ref[_i];
-          _results.push(Traction.Bindings.Factory(el, specification).bindTo(binding));
+          _results.push(_this.bindings.push(Traction.Bindings.Factory(el, specification).bindTo(binding)));
         }
         return _results;
       });

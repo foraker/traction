@@ -17,7 +17,7 @@ describe "prerendered element rendering strategy", ->
 
     describe "bindings", ->
       beforeEach ->
-        @binding = {bindTo: ->}
+        @binding = {bindTo: -> @}
         spyOn(Traction.Bindings, "Factory").andReturn(@binding)
 
       it "creates bindings for data-bind attributes", ->
@@ -25,6 +25,12 @@ describe "prerendered element rendering strategy", ->
         renderer.call()
 
         expect(Traction.Bindings.Factory).toHaveBeenCalledWith(renderer.$("p")[0], "attribute")
+
+      it "registers the binding", ->
+        renderer = rendererWithContent("<p data-bind='attribute'></p>")
+        renderer.call()
+
+        expect(renderer.bindings).toEqual [@binding]
 
       it "creates multiple bindings for multiple tag", ->
         renderer = rendererWithContent("""

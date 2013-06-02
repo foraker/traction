@@ -60,7 +60,9 @@
       describe("bindings", function() {
         beforeEach(function() {
           this.binding = {
-            bindTo: function() {}
+            bindTo: function() {
+              return this;
+            }
           };
           return spyOn(Traction.Bindings, "Factory").andReturn(this.binding);
         });
@@ -70,6 +72,13 @@
           };
           this.renderer.call();
           return expect(Traction.Bindings.Factory).toHaveBeenCalledWith(this.renderer.$("p")[0], "attribute");
+        });
+        it("registers the binding", function() {
+          this.renderer.template = function() {
+            return "<p data-bind='attribute'></p>";
+          };
+          this.renderer.call();
+          return expect(this.renderer.bindings).toEqual([this.binding]);
         });
         it("creates multiple bindings for multiple tag", function() {
           this.renderer.template = function() {

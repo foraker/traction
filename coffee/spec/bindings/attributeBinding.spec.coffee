@@ -1,4 +1,8 @@
 describe "attribute binding", ->
+  jasmine.itShouldBehaveLike("a binding", {
+    describedClass: Traction.Bindings.AttributeBinding
+  })
+
   describe "#bindTo", ->
     beforeEach ->
       @element       = $("<p></p>")[0]

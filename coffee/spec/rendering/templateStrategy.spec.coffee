@@ -41,7 +41,7 @@ describe "template rendering strategy", ->
 
     describe "bindings", ->
       beforeEach ->
-        @binding = {bindTo: ->}
+        @binding = {bindTo: -> @}
         spyOn(Traction.Bindings, "Factory").andReturn(@binding)
 
       it "creates bindings for data-bind attributes", ->
@@ -49,6 +49,12 @@ describe "template rendering strategy", ->
         @renderer.call()
 
         expect(Traction.Bindings.Factory).toHaveBeenCalledWith(@renderer.$("p")[0], "attribute")
+
+      it "registers the binding", ->
+        @renderer.template = -> "<p data-bind='attribute'></p>"
+        @renderer.call()
+
+        expect(@renderer.bindings).toEqual [@binding]
 
       it "creates multiple bindings for multiple tag", ->
         @renderer.template = -> """

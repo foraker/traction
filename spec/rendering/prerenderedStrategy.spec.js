@@ -34,7 +34,9 @@
       describe("bindings", function() {
         beforeEach(function() {
           this.binding = {
-            bindTo: function() {}
+            bindTo: function() {
+              return this;
+            }
           };
           return spyOn(Traction.Bindings, "Factory").andReturn(this.binding);
         });
@@ -43,6 +45,12 @@
           renderer = rendererWithContent("<p data-bind='attribute'></p>");
           renderer.call();
           return expect(Traction.Bindings.Factory).toHaveBeenCalledWith(renderer.$("p")[0], "attribute");
+        });
+        it("registers the binding", function() {
+          var renderer;
+          renderer = rendererWithContent("<p data-bind='attribute'></p>");
+          renderer.call();
+          return expect(renderer.bindings).toEqual([this.binding]);
         });
         it("creates multiple bindings for multiple tag", function() {
           var renderer;

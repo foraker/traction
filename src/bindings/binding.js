@@ -8,7 +8,12 @@
     Binding.prototype.bindTo = function(model) {
       this.model = model;
       this.model.on("change:" + this.property, this.update, this);
-      return this.update();
+      this.update();
+      return this;
+    };
+
+    Binding.prototype.destroy = function() {
+      return this.model.off(null, null, this);
     };
 
     return Binding;

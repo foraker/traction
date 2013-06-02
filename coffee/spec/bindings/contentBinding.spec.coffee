@@ -1,4 +1,6 @@
 describe "content binding", ->
+  jasmine.itShouldBehaveLike("a binding", {describedClass: Traction.Bindings.ContentBinding})
+
   describe "#bindTo", ->
     element = $("<p></p>")[0]
     model   = new Backbone.Model({name: "original name"})

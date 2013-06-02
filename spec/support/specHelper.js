@@ -11,7 +11,7 @@
     if (sharedExampleGroup = jasmine.SharedExamples[sharedExampleGroupName]) {
       return sharedExampleGroup(options);
     } else {
-      throw "Can't find shared example group '" + sharedExamplesName;
+      throw "Can't find shared example group '" + sharedExampleGroupName;
     }
   };
 

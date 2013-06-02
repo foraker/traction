@@ -2,6 +2,9 @@
 (function() {
 
   describe("formatted content binding", function() {
+    jasmine.itShouldBehaveLike("a binding", {
+      describedClass: Traction.Bindings.FormattedContentBinding
+    });
     return describe("#bindTo", function() {
       var createBinding, element, model;
       element = $("<p></p>")[0];

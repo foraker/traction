@@ -2,47 +2,61 @@
 (function() {
 
   jasmine.sharedExamplesFor("a node rendering strategy", function(options) {
-    it("triggers events on the rendered element when clicked", function() {
-      var callback, element, renderer;
-      element = $("<div><a data-emit='delete:user'></a></div>");
-      renderer = options.createInstance({
-        renderWithin: element
-      });
-      callback = jasmine.createSpy();
-      element.on("delete:user", callback);
-      element.find("a").click();
-      return expect(callback).toHaveBeenCalled();
-    });
-    it("can trigger multiple events", function() {
-      var callback1, callback2, element, renderer;
-      element = $("<div><a data-emit='delete:user delete:account'></a></div>");
-      renderer = options.createInstance({
-        renderWithin: element
-      });
-      callback1 = jasmine.createSpy();
-      callback2 = jasmine.createSpy();
-      element.on("delete:user", callback1);
-      element.on("delete:account", callback2);
-      element.find("a").click();
-      expect(callback1).toHaveBeenCalled();
-      return expect(callback2).toHaveBeenCalled();
-    });
-    return describe("forms", function() {
-      beforeEach(function() {
-        this.element = $("<div><form data-emit='create:user'></form></div>");
-        this.renderer = options.createInstance({
-          renderWithin: this.element
+    describe("event binding", function() {
+      it("triggers events on the rendered element when clicked", function() {
+        var callback, element, renderer;
+        element = $("<div><a data-emit='delete:user'></a></div>");
+        renderer = options.createInstance({
+          renderWithin: element
         });
-        this.callback = jasmine.createSpy();
-        return this.element.on("create:user", this.callback);
+        callback = jasmine.createSpy();
+        element.on("delete:user", callback);
+        element.find("a").click();
+        return expect(callback).toHaveBeenCalled();
       });
-      it("does not trigger events on click", function() {
-        this.element.find("form").click();
-        return expect(this.callback).not.toHaveBeenCalled();
+      it("can trigger multiple events", function() {
+        var callback1, callback2, element, renderer;
+        element = $("<div><a data-emit='delete:user delete:account'></a></div>");
+        renderer = options.createInstance({
+          renderWithin: element
+        });
+        callback1 = jasmine.createSpy();
+        callback2 = jasmine.createSpy();
+        element.on("delete:user", callback1);
+        element.on("delete:account", callback2);
+        element.find("a").click();
+        expect(callback1).toHaveBeenCalled();
+        return expect(callback2).toHaveBeenCalled();
       });
-      return it("triggers events on submission", function() {
-        this.element.find("form").submit();
-        return expect(this.callback).toHaveBeenCalled();
+      return describe("forms", function() {
+        beforeEach(function() {
+          this.element = $("<div><form data-emit='create:user'></form></div>");
+          this.renderer = options.createInstance({
+            renderWithin: this.element
+          });
+          this.callback = jasmine.createSpy();
+          return this.element.on("create:user", this.callback);
+        });
+        it("does not trigger events on click", function() {
+          this.element.find("form").click();
+          return expect(this.callback).not.toHaveBeenCalled();
+        });
+        return it("triggers events on submission", function() {
+          this.element.find("form").submit();
+          return expect(this.callback).toHaveBeenCalled();
+        });
+      });
+    });
+    return describe("destroy", function() {
+      return it("removes all bindings", function() {
+        var binding, renderer;
+        renderer = options.createInstance();
+        binding = {
+          destroy: jasmine.createSpy()
+        };
+        renderer.bindings = [binding];
+        renderer.destroy();
+        return expect(binding.destroy).toHaveBeenCalled();
       });
     });
   });
