@@ -63,6 +63,13 @@ module.exports = function(grunt) {
         src: SRC,
         dest: 'traction.js'
       }
+    },
+    uglify: {
+      traction: {
+        files: {
+          "traction.min.js": "traction.js"
+        }
+      }
     }
   });
 
@@ -71,6 +78,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('default', 'watch:compile');
+  grunt.registerTask('test', 'jasmine:traction');
+  grunt.registerTask('build', ['exec:compile', 'concat', 'uglify:traction']);
 };
