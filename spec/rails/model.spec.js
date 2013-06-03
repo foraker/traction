@@ -93,20 +93,17 @@
         });
       });
       describe("updating associations", function() {
-        it("sets non-association attributes", function() {
+        it("sets associated model attributes", function() {
           this.user.set({
             name: "new name"
           });
           return expect(this.user.get("name")).toBe("new name");
         });
-        it("resets resetable (collection) associations", function() {
-          var commentsCollection;
-          commentsCollection = this.user.get("comments");
-          spyOn(commentsCollection, "reset");
+        it("sets associated collection contents", function() {
           this.user.set({
             comments: []
           });
-          return expect(commentsCollection.reset).toHaveBeenCalledWith([]);
+          return expect(this.user.get("comments").models).toEqual([]);
         });
         it("retains the updated association", function() {
           this.user.set({
@@ -126,7 +123,7 @@
           });
           return expect(this.user.get("comments")).toBe(void 0);
         });
-        return it("sets setable (model) associations", function() {
+        it("sets setable (model) associations", function() {
           this.user.set({
             profile: {
               type: "admin"
@@ -134,10 +131,77 @@
           });
           return expect(this.user.get("profile").get("type")).toBe("admin");
         });
+        it("emits a change event", function() {
+          var callback;
+          callback = jasmine.createSpy();
+          this.user.on("change:comments", callback);
+          this.user.set({
+            comments: []
+          });
+          return expect(callback).toHaveBeenCalled();
+        });
+        it("emits a change event when the association is removed", function() {
+          var callback;
+          callback = jasmine.createSpy();
+          this.user.on("change:comments", callback);
+          this.user.set({
+            comments: null
+          });
+          return expect(callback).toHaveBeenCalled();
+        });
+        it("does not emit a change event when silent: true is passed", function() {
+          var callback;
+          callback = jasmine.createSpy();
+          this.user.on("change:comments", callback);
+          this.user.set({
+            comments: []
+          }, {
+            silent: true
+          });
+          return expect(callback).not.toHaveBeenCalled();
+        });
+        it("does not emit a change event when the association is unchanged", function() {
+          var callback;
+          this.user.set({
+            profile: {
+              type: "admin"
+            }
+          });
+          callback = jasmine.createSpy();
+          this.user.on("change:profile", callback);
+          this.user.set({
+            profile: {
+              type: "admin"
+            }
+          });
+          return expect(callback).not.toHaveBeenCalled();
+        });
+        return it("does not emit a change event when the lack of an association is unchanged", function() {
+          var callback;
+          this.user.set({
+            profile: null
+          });
+          callback = jasmine.createSpy();
+          this.user.on("change:profile", callback);
+          this.user.set({
+            profile: null
+          });
+          return expect(callback).not.toHaveBeenCalled();
+        });
       });
-      return it("handles attr, val style setting", function() {
+      it("handles attr, val style setting", function() {
         this.user.set("name", "Timothy");
         return expect(this.user.get("name")).toBe("Timothy");
+      });
+      return it("does not mutate the attributes", function() {
+        var orignalAttributes;
+        orignalAttributes = {
+          comments: []
+        };
+        this.user.set(orignalAttributes);
+        return expect(orignalAttributes).toEqual({
+          comments: []
+        });
       });
     });
     describe("#url", function() {

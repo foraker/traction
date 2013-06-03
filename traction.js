@@ -579,29 +579,15 @@
     };
 
     Model.prototype.set = function(key, value, options) {
-      var associationName, klass, newAttributes, urlRoot, _ref;
-      if (typeof key !== "object") {
+      var newAttributes;
+      if (typeof key === "object") {
+        newAttributes = _.clone(key);
+        options = value;
+      } else {
         newAttributes = {};
         newAttributes[key] = value;
-      } else {
-        newAttributes = key;
       }
-      _ref = this.associations;
-      for (associationName in _ref) {
-        klass = _ref[associationName];
-        if (this.get(associationName)) {
-          if (!(associationName in newAttributes)) {
-            continue;
-          }
-          this._updateExistingAssociation(associationName, klass, newAttributes[associationName]);
-        } else {
-          this._createNewAssociation(associationName, klass, newAttributes[associationName]);
-        }
-        delete newAttributes[associationName];
-        if (urlRoot = newAttributes["" + associationName + "_url"]) {
-          this.get(associationName).url = urlRoot;
-        }
-      }
+      this._setAssociations(newAttributes, options || {});
       return Model.__super__.set.call(this, newAttributes, options);
     };
 
@@ -645,24 +631,58 @@
       return this.constructor === Traction.Rails.Model;
     };
 
-    Model.prototype._updateExistingAssociation = function(associationName, klass, associated) {
-      var _base, _base1;
-      if (associated instanceof klass || _.isUndefined(associated)) {
-        return this.attributes[associationName] = associated;
-      } else {
-        if (typeof (_base = this.get(associationName)).reset === "function") {
-          _base.reset(associated);
+    Model.prototype._setAssociations = function(attributes, options) {
+      var associationName, isDirty, klass, newValue, previousValue, urlRoot, _ref, _results;
+      _ref = this.associations;
+      _results = [];
+      for (associationName in _ref) {
+        klass = _ref[associationName];
+        newValue = attributes[associationName];
+        if (previousValue = this.get(associationName)) {
+          if (!(associationName in attributes)) {
+            continue;
+          }
+          isDirty = this._updateAssociation(klass, associationName, newValue);
+          if (isDirty && !options.silent) {
+            this.trigger("change:" + associationName, previousValue);
+          }
+        } else {
+          this._createAssociation(klass, associationName, newValue);
         }
-        return typeof (_base1 = this.get(associationName)).set === "function" ? _base1.set(associated) : void 0;
+        delete attributes[associationName];
+        if (urlRoot = attributes["" + associationName + "_url"]) {
+          _results.push(this.get(associationName).url = urlRoot);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    Model.prototype._createAssociation = function(klass, name, newValue) {
+      if (newValue instanceof klass) {
+        return this.attributes[name] = newValue;
+      } else {
+        newValue = new klass(newValue);
+        return this.attributes[name] = newValue;
       }
     };
 
-    Model.prototype._createNewAssociation = function(associationName, klass, associated) {
-      if (associated instanceof klass) {
-        return this.attributes[associationName] = associated;
+    Model.prototype._updateAssociation = function(klass, name, newValue) {
+      var callback, isDirty;
+      isDirty = false;
+      if (newValue instanceof klass || !newValue) {
+        isDirty = newValue !== this.get(name);
+        this.attributes[name] = newValue;
       } else {
-        return this.attributes[associationName] = new klass(associated);
+        callback = function() {
+          return isDirty = true;
+        };
+        this.get(name).on("change add remove", callback);
+        this.get(name).set(newValue);
+        this.get(name).off("change add remove", callback);
       }
+      return isDirty;
     };
 
     return Model;

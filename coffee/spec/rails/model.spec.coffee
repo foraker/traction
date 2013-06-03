@@ -45,15 +45,13 @@ describe "Rails model", ->
         expect(user.get("profile")).toBeInstanceOf Backbone.Model
 
     describe "updating associations", ->
-      it "sets non-association attributes", ->
+      it "sets associated model attributes", ->
         @user.set({name: "new name"})
         expect(@user.get("name")).toBe "new name"
 
-      it "resets resetable (collection) associations", ->
-        commentsCollection = @user.get("comments")
-        spyOn(commentsCollection, "reset")
+      it "sets associated collection contents", ->
         @user.set({comments: []})
-        expect(commentsCollection.reset).toHaveBeenCalledWith([])
+        expect(@user.get("comments").models).toEqual []
 
       it "retains the updated association", ->
         @user.set({comments: []})
@@ -72,9 +70,46 @@ describe "Rails model", ->
         @user.set({profile: {type: "admin"}})
         expect(@user.get("profile").get("type")).toBe "admin"
 
+      it "emits a change event", ->
+        callback = jasmine.createSpy()
+        @user.on("change:comments", callback)
+        @user.set({comments: []})
+        expect(callback).toHaveBeenCalled()
+
+      it "emits a change event when the association is removed", ->
+        callback = jasmine.createSpy()
+        @user.on("change:comments", callback)
+        @user.set({comments: null})
+        expect(callback).toHaveBeenCalled()
+
+      it "does not emit a change event when silent: true is passed", ->
+        callback = jasmine.createSpy()
+        @user.on("change:comments", callback)
+        @user.set({comments: []}, {silent: true})
+        expect(callback).not.toHaveBeenCalled()
+
+      it "does not emit a change event when the association is unchanged", ->
+        @user.set({profile: {type: "admin"}})
+        callback = jasmine.createSpy()
+        @user.on("change:profile", callback)
+        @user.set({profile: {type: "admin"}})
+        expect(callback).not.toHaveBeenCalled()
+
+      it "does not emit a change event when the lack of an association is unchanged", ->
+        @user.set({profile: null})
+        callback = jasmine.createSpy()
+        @user.on("change:profile", callback)
+        @user.set({profile: null})
+        expect(callback).not.toHaveBeenCalled()
+
     it "handles attr, val style setting", ->
       @user.set("name", "Timothy")
       expect(@user.get("name")).toBe "Timothy"
+
+    it "does not mutate the attributes", ->
+      orignalAttributes = {comments: []}
+      @user.set(orignalAttributes)
+      expect(orignalAttributes).toEqual {comments: []}
 
   describe "#url", ->
     it "returns the 'url' attribute", ->

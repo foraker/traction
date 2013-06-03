@@ -6,24 +6,14 @@ class Traction.Rails.Model extends Backbone.Model
     @on("error", @parseErrors, @)
 
   set: (key, value, options) ->
-    unless typeof key == "object"
-      newAttributes = {}
-      newAttributes[key] = value
+    if typeof key == "object"
+      newAttributes = _.clone key
+      options       = value
     else
-      newAttributes = key
+      newAttributes      = {}
+      newAttributes[key] = value
 
-    for associationName, klass of @associations
-      if @get(associationName)
-        continue unless associationName of newAttributes
-        @_updateExistingAssociation(associationName, klass, newAttributes[associationName])
-      else
-        @_createNewAssociation(associationName, klass, newAttributes[associationName])
-
-      delete newAttributes[associationName]
-
-      if urlRoot = newAttributes["#{associationName}_url"]
-        @get(associationName).url = urlRoot
-
+    @_setAssociations(newAttributes, options || {})
     super(newAttributes, options)
 
   parseErrors: (self, response) ->
@@ -54,15 +44,40 @@ class Traction.Rails.Model extends Backbone.Model
   _isBaseClass: ->
     @constructor == Traction.Rails.Model
 
-  _updateExistingAssociation: (associationName, klass, associated) ->
-    if associated instanceof klass or _.isUndefined(associated)
-      @attributes[associationName] = associated
-    else
-      @get(associationName).reset?(associated)
-      @get(associationName).set?(associated)
+  _setAssociations: (attributes, options) ->
+    for associationName, klass of @associations
+      newValue = attributes[associationName]
 
-  _createNewAssociation: (associationName, klass, associated) ->
-    if associated instanceof klass
-      @attributes[associationName] = associated
+      if previousValue = @get(associationName)
+        continue unless associationName of attributes
+        isDirty = @_updateAssociation(klass, associationName, newValue)
+        if isDirty and !options.silent
+          @trigger("change:#{associationName}", previousValue)
+      else
+        @_createAssociation(klass, associationName, newValue)
+
+      delete attributes[associationName]
+
+      if urlRoot = attributes["#{associationName}_url"]
+        @get(associationName).url = urlRoot
+
+  _createAssociation: (klass, name, newValue) ->
+    if newValue instanceof klass
+      @attributes[name] = newValue
     else
-      @attributes[associationName] = new klass(associated)
+      newValue = new klass(newValue)
+      @attributes[name] = newValue
+
+  _updateAssociation: (klass, name, newValue) ->
+    isDirty = false
+
+    if newValue instanceof klass or !newValue
+      isDirty = newValue != @get(name)
+      @attributes[name] = newValue
+    else
+      callback = -> isDirty = true
+      @get(name).on("change add remove", callback)
+      @get(name).set(newValue)
+      @get(name).off("change add remove", callback)
+
+    return isDirty
