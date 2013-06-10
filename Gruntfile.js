@@ -15,7 +15,10 @@ module.exports = function(grunt) {
     'src/bindings/attributeBinding.js',
     'src/bindings/factory.js',
     'src/rails/model.js',
-    'src/rails/collection.js'
+    'src/rails/collection.js',
+    'src/forms/form.js',
+    'src/forms/textField.js',
+    'src/forms/textArea.js'
   ]
 
   grunt.initConfig({

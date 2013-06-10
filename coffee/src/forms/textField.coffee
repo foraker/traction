@@ -1,0 +1,1 @@
+class Traction.Forms.TextField extends Backbone.View

@@ -1,1 +1,8 @@
-`Traction = {Rendering: {}, Bindings: {}, TemplateHelpers: {}, Rails: {}}`
+`
+Traction = {
+  Rendering: {},
+  Bindings: {},
+  TemplateHelpers: {},
+  Rails: {},
+  Forms: {}
+}`
