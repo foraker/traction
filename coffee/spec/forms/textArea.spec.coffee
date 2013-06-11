@@ -1,4 +1,4 @@
-describe "Traction.Forms.TextField", ->
+describe "Traction.Forms.TextArea", ->
   createInstance = (options) ->
     defaults = {
       attribute: "first_name"
@@ -7,15 +7,10 @@ describe "Traction.Forms.TextField", ->
       model:     new Backbone.Model()
     }
 
-    new Traction.Forms.TextField(_.extend(defaults, options))
+    new Traction.Forms.TextArea(_.extend(defaults, options))
 
   describe "shared behavior", ->
     jasmine.itShouldBehaveLike("a field", {
       createInstance: createInstance
-      input: "input"
+      input: "textarea"
     })
-
-  describe "#render", ->
-    it "renders an input with the correct type", ->
-      field = createInstance().render()
-      expect(field.$("input").attr("type")).toBe("text")
