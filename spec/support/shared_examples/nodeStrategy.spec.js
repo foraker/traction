@@ -42,6 +42,9 @@
           return expect(this.callback).not.toHaveBeenCalled();
         });
         return it("triggers events on submission", function() {
+          this.element.find("form").submit(function(event) {
+            return event.preventDefault();
+          });
           this.element.find("form").submit();
           return expect(this.callback).toHaveBeenCalled();
         });

@@ -32,7 +32,7 @@
       renderer = createInstance();
       return expect(renderer.template).toBe(templateFunction);
     });
-    return describe("#call", function() {
+    describe("#call", function() {
       beforeEach(function() {
         this.element = $("<div>original content</div>")[0];
         this.renderer = createInstance({
@@ -144,6 +144,20 @@
           });
           return expect(this.renderer.el.innerHTML).toEqual("<p>Child 1 Content</p>\n<span><p>Child 2 Content</p></span>");
         });
+      });
+    });
+    return describe("#buildOutlet", function() {
+      var renderer;
+      renderer = createInstance();
+      it("returns a script tag with the correct data attribute", function() {
+        var markup;
+        markup = renderer.buildOutlet("child");
+        return expect(markup).toBe("<script data-outlet='child'></script>");
+      });
+      return it("default the name of the child to an empty string", function() {
+        var markup;
+        markup = renderer.buildOutlet();
+        return expect(markup).toBe("<script data-outlet=''></script>");
       });
     });
   });

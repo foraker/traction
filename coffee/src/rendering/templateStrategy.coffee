@@ -16,7 +16,7 @@ class Traction.Rendering.TemplateStrategy extends Traction.Rendering.NodeStrateg
 
   buildOutlet: (outletName)->
     outletName ||= ""
-    "<output data-outlet='#{outletName}'></output>"
+    "<script data-outlet='#{outletName}'></script>"
 
   # Private
 

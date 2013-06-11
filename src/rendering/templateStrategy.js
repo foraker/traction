@@ -33,7 +33,7 @@
 
     TemplateStrategy.prototype.buildOutlet = function(outletName) {
       outletName || (outletName = "");
-      return "<output data-outlet='" + outletName + "'></output>";
+      return "<script data-outlet='" + outletName + "'></script>";
     };
 
     TemplateStrategy.prototype._template = function(options) {

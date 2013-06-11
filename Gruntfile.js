@@ -16,9 +16,10 @@ module.exports = function(grunt) {
     'src/bindings/factory.js',
     'src/rails/model.js',
     'src/rails/collection.js',
-    'src/forms/form.js',
+    'src/forms/field.js',
     'src/forms/textField.js',
-    'src/forms/textArea.js'
+    'src/forms/textArea.js',
+    'src/forms/form.js'
   ]
 
   grunt.initConfig({

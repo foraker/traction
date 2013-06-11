@@ -103,3 +103,14 @@ describe "template rendering strategy", ->
           <p>Child 1 Content</p>
           <span><p>Child 2 Content</p></span>
         """)
+
+  describe "#buildOutlet", ->
+    renderer = createInstance()
+
+    it "returns a script tag with the correct data attribute", ->
+      markup = renderer.buildOutlet("child")
+      expect(markup).toBe "<script data-outlet='child'></script>"
+
+    it "default the name of the child to an empty string", ->
+      markup = renderer.buildOutlet()
+      expect(markup).toBe "<script data-outlet=''></script>"

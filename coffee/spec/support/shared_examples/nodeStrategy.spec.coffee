@@ -36,6 +36,7 @@ jasmine.sharedExamplesFor "a node rendering strategy", (options) ->
         expect(@callback).not.toHaveBeenCalled()
 
       it "triggers events on submission", ->
+        @element.find("form").submit (event) -> event.preventDefault()
         @element.find("form").submit()
         expect(@callback).toHaveBeenCalled()
 
