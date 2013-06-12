@@ -14,3 +14,8 @@ describe "Traction.Forms.TextArea", ->
       createInstance: createInstance
       input: "textarea"
     })
+
+    jasmine.itShouldBehaveLike("a text field", {
+      createInstance: createInstance
+      input: "textarea"
+    })

@@ -14,7 +14,11 @@
       return new Traction.Forms.TextField(_.extend(defaults, options));
     };
     describe("shared behavior", function() {
-      return jasmine.itShouldBehaveLike("a field", {
+      jasmine.itShouldBehaveLike("a field", {
+        createInstance: createInstance,
+        input: "input"
+      });
+      return jasmine.itShouldBehaveLike("a text field", {
         createInstance: createInstance,
         input: "input"
       });

@@ -13,10 +13,6 @@
 
     Field.prototype.className = "field";
 
-    Field.prototype.events = {
-      "change input": "applyAutoCommit"
-    };
-
     Field.prototype.initialize = function() {
       this.options = _.extend(this._defaults(), this.options);
       return this.listenTo(this.model, "change:" + this.options.attribute, this.reset);
@@ -93,14 +89,12 @@
 
     Field.prototype._renderLabel = function() {
       return this.$el.append(this.labelTemplate({
-        id: this.cid,
         options: this.options
       }));
     };
 
     Field.prototype._renderInput = function() {
       return this.$el.append(this.inputTemplate({
-        id: this.cid,
         options: this.options
       }));
     };
@@ -111,6 +105,7 @@
 
     Field.prototype._defaults = function() {
       return {
+        id: this.cid,
         placeholder: this.options.label,
         autoCommit: true,
         required: false

@@ -22,18 +22,6 @@
         field.render();
         return expect(field.$(options.input).attr("name")).toBe("first_name_input");
       });
-      it("renders an input with the correct placeholder", function() {
-        var field;
-        field = options.createInstance().render();
-        return expect(field.$(options.input).attr("placeholder")).toBe("First name");
-      });
-      it("allows the placeholder to be specified", function() {
-        var field;
-        field = options.createInstance({
-          placeholder: "alternative placeholder"
-        }).render();
-        return expect(field.$(options.input).attr("placeholder")).toBe("alternative placeholder");
-      });
       it("initializes the input content", function() {
         var field, model;
         model = new Backbone.Model({
@@ -103,26 +91,19 @@
       return it("returns the input value", function() {
         var field;
         field = options.createInstance().render();
-        field.$(options.input).val("ABC");
-        return expect(field.get()).toBe("ABC");
+        field.$(options.input).val("Jobin");
+        return expect(field.get()).toBe("Jobin");
       });
     });
     describe("#set", function() {
       return it("sets the input value", function() {
         var field;
         field = options.createInstance().render();
-        field.set("ABC");
-        return expect(field.$(options.input).val()).toBe("ABC");
+        field.set("Jobin");
+        return expect(field.$(options.input).val()).toBe("Jobin");
       });
     });
     describe("#clear", function() {
-      it("clears the input value", function() {
-        var field;
-        field = options.createInstance().render();
-        field.set("ABC");
-        field.clear();
-        return expect(field.get()).toBe("");
-      });
       return it("removes any errors", function() {
         var field;
         field = options.createInstance().render();

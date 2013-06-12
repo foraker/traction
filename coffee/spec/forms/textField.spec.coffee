@@ -15,6 +15,11 @@ describe "Traction.Forms.TextField", ->
       input: "input"
     })
 
+    jasmine.itShouldBehaveLike("a text field", {
+      createInstance: createInstance
+      input: "input"
+    })
+
   describe "#render", ->
     it "renders an input with the correct type", ->
       field = createInstance().render()

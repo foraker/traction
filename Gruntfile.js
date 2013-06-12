@@ -19,6 +19,7 @@ module.exports = function(grunt) {
     'src/forms/field.js',
     'src/forms/textField.js',
     'src/forms/textArea.js',
+    'src/forms/select.js',
     'src/forms/form.js'
   ]
 

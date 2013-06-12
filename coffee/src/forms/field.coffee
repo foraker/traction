@@ -1,7 +1,5 @@
 class Traction.Forms.Field extends Backbone.View
   className: "field"
-  events:
-    "change input": "applyAutoCommit"
 
   initialize: ->
     @options = _.extend(@_defaults(), @options)
@@ -62,16 +60,17 @@ class Traction.Forms.Field extends Backbone.View
     @input = null
 
   _renderLabel: ->
-    @$el.append @labelTemplate({id: @cid, options: @options})
+    @$el.append @labelTemplate({options: @options})
 
   _renderInput: ->
-    @$el.append @inputTemplate({id: @cid, options: @options})
+    @$el.append @inputTemplate({options: @options})
 
   _designateAsRequired: ->
     @$el.addClass("required")
 
   _defaults: ->
     {
+      id:          @cid,
       placeholder: @options.label,
       autoCommit:  true
       required:    false

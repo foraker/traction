@@ -16,14 +16,6 @@ jasmine.sharedExamplesFor "a field", (options) ->
       field.render()
       expect(field.$(options.input).attr("name")).toBe("first_name_input")
 
-    it "renders an input with the correct placeholder", ->
-      field = options.createInstance().render()
-      expect(field.$(options.input).attr("placeholder")).toBe("First name")
-
-    it "allows the placeholder to be specified", ->
-      field = options.createInstance({placeholder: "alternative placeholder"}).render()
-      expect(field.$(options.input).attr("placeholder")).toBe("alternative placeholder")
-
     it "initializes the input content", ->
       model = new Backbone.Model({first_name: "Jobin"})
       field = options.createInstance({model: model}).render()
@@ -71,22 +63,16 @@ jasmine.sharedExamplesFor "a field", (options) ->
   describe "#get", ->
     it "returns the input value", ->
       field = options.createInstance().render()
-      field.$(options.input).val("ABC")
-      expect(field.get()).toBe("ABC")
+      field.$(options.input).val("Jobin")
+      expect(field.get()).toBe("Jobin")
 
   describe "#set", ->
     it "sets the input value", ->
       field = options.createInstance().render()
-      field.set("ABC")
-      expect(field.$(options.input).val()).toBe("ABC")
+      field.set("Jobin")
+      expect(field.$(options.input).val()).toBe("Jobin")
 
   describe "#clear", ->
-    it "clears the input value", ->
-      field = options.createInstance().render()
-      field.set("ABC")
-      field.clear()
-      expect(field.get()).toBe("")
-
     it "removes any errors", ->
       field = options.createInstance().render()
       field.renderErrors(["error"])
