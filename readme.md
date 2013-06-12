@@ -39,13 +39,13 @@ var OrderView = Traction.View.extend({
   }
 })
 ```
-The first `data-bind` declaration specifies an *attribute binding*.  If `order.get("completed")` is `true`, the outer \<div> gets a class of "completed-order".  If `order.get("completed")` is falsy, the \<div> gets a class of "incomplete-order".  Moreover, if we update the model, the binding will ensure the class attribute stays in sync.
+* The first `data-bind` declaration specifies an *attribute binding*.  If `order.get("completed")` is `true`, the outer \<div> gets a class of "completed-order".  If `order.get("completed")` is falsy, the \<div> gets a class of "incomplete-order".  Moreover, if we update the model, the binding will ensure the class attribute stays in sync.
 
-The second `data-bind` declaration specifies a *content binding*.  A content binding ensures the content of the \<dd> always stays in sync with the model.
+* The second `data-bind` declaration specifies a *content binding*.  A content binding ensures the content of the \<dd> always stays in sync with the model.
 
-The third `data-bind` declaration specifies a *formatted content binding*.  A formatted content binding work exactly like a content binding, but passes content through a formatter before displaying.  In this case, `model.get("order_total")` is passed through the currency formatter.  `model.set({order_total: 15})` would cause "$15.00" to appear in the \<dd>.  Formatters can be chained and can receive arguments.  For more information of formatter content bindings, see below.
+* The third `data-bind` declaration specifies a *formatted content binding*.  A formatted content binding work exactly like a content binding, but passes content through a formatter before displaying.  In this case, `model.get("order_total")` is passed through the currency formatter.  `model.set({order_total: 15})` would cause "$15.00" to appear in the \<dd>.  Formatters can be chained and can receive arguments.  For more information of formatter content bindings, see below.
 
-Lastly, `data-emit` does not express a binding.  Rather, it is used to trigger *semantic events*.  Semantic events are used to augment the declarative nature of the `events` attribute.  Where one might have written
+* Lastly, `data-emit` does not express a binding.  Rather, it is used to trigger *semantic events*.  Semantic events are used to augment the declarative nature of the `events` attribute.  Where one might have written
 ```Javascript
 events: {
   "click .cancel": "cancel"
