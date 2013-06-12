@@ -19,25 +19,25 @@ By default, the template is retrieved via JST, and is expected to live in the `/
 Whether a Traction View receives an `el` attribute or `template` attribute, the rendered HTML can be used to express bindings between the model and the HTML.  For example:
 
 ```HTML
-  <div id="order-summary" data-bind="class:completed:completed-order:incomplete-order">
-    <dl>
-      <dt>Order #</dt><dd data-bind="order_id"></dd>
-      <dt>Amount</dt><dd data-bind="order_total|currency"></dd>
-    </dl>
+<div id="order-summary" data-bind="class:completed:completed-order:incomplete-order">
+  <dl>
+    <dt>Order #</dt><dd data-bind="order_id"></dd>
+    <dt>Amount</dt><dd data-bind="order_total|currency"></dd>
+  </dl>
 
-    <a href="#" data-emit="cancel">Cancel</a>
-  </div>
+  <a href="#" data-emit="cancel">Cancel</a>
+</div>
 ```
 ```Javascript
-  var OrderView = Traction.View.extend({
-    el: "#order-summary",
-    events: {
-      "cancel": "cancel"
-    },
-    cancel: function() {
-      this.model.cancel()
-    }
-  })
+var OrderView = Traction.View.extend({
+  el: "#order-summary",
+  events: {
+    "cancel": "cancel"
+  },
+  cancel: function() {
+    this.model.cancel()
+  }
+})
 ```
 The first `data-bind` declaration specifies an *attribute binding*.  If `order.get("completed")` is `true`, the outer \<div> gets a class of "completed-order".  If `order.get("completed")` is falsy, the \<div> gets a class of "incomplete-order".  Moreover, if we update the model, the binding will ensure the class attribute stays in sync.
 
@@ -47,15 +47,15 @@ The third `data-bind` declaration specifies a *formatted content binding*.  A fo
 
 Lastly, `data-emit` does not express a binding.  Rather, it is used to trigger *semantic events*.  Semantic events are used to augment the declarative nature of the `events` attribute.  Where one might have written
 ```Javascript
-  events: {
-    "click .cancel": "cancel"
-  }
+events: {
+  "click .cancel": "cancel"
+}
 ```
 One may now write
 ```Javascript
-  events: {
-    "click": "cancel"
-  }
+events: {
+  "click": "cancel"
+}
 ```
 
 ##### Customizing template retrieval
