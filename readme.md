@@ -1,5 +1,78 @@
 # Traction
-Backbone.js Extensions
+Extends yer Backbone.
+
+Backbone.js is not a framework. It provides useful primitives and leaves the composition and architecture decisions to users.  Likewise, Traction.js has no framework ambitions.  Instead, it tries to enhance existing primitives and provide a few of its own.
+
+## Overview
+
+#### Bindings
+Bindings allow you to synchronize your model and your template automatically.
+```HTML
+<h1 data-bind="name"></h1>
+```
+`model.set({name: "User Name"})` will cause the \<h1> to display "User Name".  And a subsequent `model.set({name: "Updated User Name"})` will cause the \<h1> to display "Updated User Name".
+
+There are several varieties of binding which allow the binding of tag content and tag attributes, as well as formatting tag content.
+
+#### Computed Attributes
+Computed attributes are model attributes which rely on other model attributes.
+```Javascript
+var User = Traction.Model.extend({
+  computed_attributes: {
+    fullName: function() {
+      [this.get("firstName"), this.get("lastName")].join(" ")
+    }
+  }
+});
+
+var user = new User({first_name: "Timothy", last_name: "Tanks"});
+alert(user.get("fullName")); // alerts 'Timothy Tanks'
+
+user.set({last_name: "Twain"})
+alert(user.get("fullName")); // alerts 'Timothy Twain'
+
+user.on("change:fullName", function(){
+  alert("fullName changed")
+})
+user.set({first_name: "Crindy"}) // alerts 'fullName changed'
+```
+
+`change:<attribute>` events allow you to set up bindings to computed attributes.
+```HTML
+<span data-bind="fullName|upcase"></span>
+```
+This is an example of a *formatted content binding*. The \<span> content will always reflect the upcased version of `model.get("fullName")`.
+
+#### Children
+
+Backbone Views are often hierarchical. `Traction.View` instances include a `this.children` property which is used to manage child views.
+
+```Javascript
+var BlogPostView = Traction.View.extend({
+  initialize: {
+    this.children.add("commentForm", new CommentForm())
+    this.children.add("commentsList", new CommentList())
+  },
+  hideComments: {
+    this.children.each(function(child){
+      child.hide()
+    })
+  },
+  disableNewComments: {
+    this.children.get("commentForm").disable()
+  }
+});
+```
+
+A parent `Traction.View` will automatically render its children whenever the parent is rendered.
+
+#### Event Proxying
+
+#### Callbacks
+
+#### Forms
+
+
 
 ## Documentation
 
