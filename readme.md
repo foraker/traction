@@ -1,7 +1,19 @@
 # Traction
-Extends yer Backbone.
+Extend your Backbone.
 
-Backbone.js is not a framework. It provides useful primitives and leaves the composition and architecture decisions to users.  Likewise, Traction.js has no framework ambitions.  Instead, it tries to enhance existing primitives and provide a few of its own.
+Backbone.js is not a framework. It provides useful primitives and leaves the composition and architecture decisions to you.
+
+Likewise, Traction.js has no framework ambitions.  Instead, it tries to enhance existing primitives and provide a few of its own.
+
+## Features
+
+[Bindings](#bindings)
+[Computed Attributes](#computed-attributes)
+[View Hierarchies](#children)
+[Event Proxying](#event-proxying)
+[Forms](#forms)
+[Rails Support](#rails-support)
+[Bootstrap Support](#bootstrap-support)
 
 ## Overview
 
@@ -67,12 +79,9 @@ var BlogPostView = Traction.View.extend({
 A parent `Traction.View` will automatically render its children whenever the parent is rendered.
 
 #### Event Proxying
-
-#### Callbacks
-
 #### Forms
-
-
+#### Rails Support
+#### Bootstrap Support
 
 ## Documentation
 
@@ -132,6 +141,7 @@ events: {
 ```
 
 ##### Customizing template retrieval
+#### Callbacks
 
 ### Traction.Model
 ### Traction.Rails
