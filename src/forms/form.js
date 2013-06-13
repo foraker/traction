@@ -69,7 +69,7 @@
 
     Form.prototype._defaults = function(options) {
       return {
-        name: options.attribute,
+        name: options.attribute + "_field",
         label: this._generateLabel(options.attribute),
         type: Traction.Forms.TextField,
         model: this.model

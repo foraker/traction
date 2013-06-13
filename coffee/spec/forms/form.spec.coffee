@@ -36,7 +36,7 @@ describe "form", ->
     it "adds the input to children", ->
       spyOn(@form.children, "add")
       @form.addInput(attribute: "email")
-      expect(@form.children.add).toHaveBeenCalledWith('email', @input)
+      expect(@form.children.add).toHaveBeenCalledWith('email_field', @input)
 
     it "allows the child name to be specified", ->
       spyOn(@form.children, "add")
