@@ -30,7 +30,7 @@ Bindings allow you to synchronize your model and your template automatically.
 ```HTML
 <h1 data-bind="name"></h1>
 ```
-`model.set({name: "User Name"})` will cause the \<h1> to display "User Name".  
+`model.set({name: "User Name"})` will cause the \<h1> to display "User Name".
 A subsequent `model.set({name: "Updated User Name"})` will cause the \<h1> to display "Updated User Name".
 
 There are several varieties of bindings which allow the binding of tag content and tag attributes, as well as formatting tag content.
@@ -88,6 +88,31 @@ var BlogPostView = Traction.View.extend({
 A parent `Traction.View` will automatically render its children whenever the parent is rendered.
 
 #### Event Proxying
+
+Events can be proxied and optionally renamed.  This is useful for propagating events upward in a hierarchy.
+
+```Javascript
+var UserView = Traction.View.extend({
+  initialize: function() {
+    this.proxyEvent(this.model, "sync", "user:saved")
+    this.proxyEvent(this.model, "destroy")
+  }
+})
+
+var user = new Backbone.Model()
+var userView = new UserView({model: user})
+
+userView.on("user:saved", function(user){
+  alert("user saved")
+});
+userView.on("destroy", function(user){
+  alert("user destroyed")
+});
+
+model.save() // alerts "user saved"
+model.destroy() // alerts "user destroyed"
+```
+
 #### Forms
 #### Rails Support
 #### Bootstrap Support
