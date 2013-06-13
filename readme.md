@@ -114,6 +114,56 @@ model.destroy() // alerts "user destroyed"
 ```
 
 #### Forms
+`Traction.Forms.Form` allows you to quickly compose forms which automatically sync data back to the model and render inline errors.
+
+```Javascript
+var ContactForm = Traction.Forms.Form.extend({
+  initialize: function() {
+    this.addInput({attribute: "email"})
+    this.addInput({
+      attribute: "message",
+      label: "Your Message",
+      placeholder: "Add a message here",
+      type: Traction.Forms.TextArea
+    })
+  }
+})
+```
+Template:
+```HTML
+<form>
+  Welcome! Please enter your email address:
+  <%= @output("email_field") %>
+
+  And why not a message?
+  <%= @output("message_field") %>
+
+  <input type="sumbit"></input>
+</form>
+```
+
+```Javascript
+  var model = new Backbone.Model()
+  var contactForm = new ContactForm({model: model})
+```
+
+<form>
+  Welcome! Please enter your email address:
+  <lable for="email_field">Email</lable>
+  <input type="text" name="email_field" placeholder="Email"></input>
+
+  And why not a message?
+  <label for="message_field">Email</lable>
+  <textarea name="message_field" placeholder="Add a message here"></textarea>
+
+  <input type="sumbit"></input>
+</form>
+
+```Javascript
+// Type "email@example.com" into email field
+model.get("email") // "email@example.com"
+```
+
 #### Rails Support
 #### Bootstrap Support
 
