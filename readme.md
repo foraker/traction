@@ -1,6 +1,8 @@
 # Traction
 Extend your Backbone.
 
+## Goals
+
 Backbone.js is not a framework. It provides useful primitives and leaves the composition and architecture decisions to you.
 
 Likewise, Traction.js has no framework ambitions.  Instead, it tries to enhance existing primitives and provide a few of its own.
@@ -8,11 +10,17 @@ Likewise, Traction.js has no framework ambitions.  Instead, it tries to enhance 
 ## Features
 
 [Bindings](#bindings)
+
 [Computed Attributes](#computed-attributes)
+
 [View Hierarchies](#children)
+
 [Event Proxying](#event-proxying)
+
 [Forms](#forms)
+
 [Rails Support](#rails-support)
+
 [Bootstrap Support](#bootstrap-support)
 
 ## Overview
