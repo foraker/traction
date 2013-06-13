@@ -30,9 +30,10 @@ Bindings allow you to synchronize your model and your template automatically.
 ```HTML
 <h1 data-bind="name"></h1>
 ```
-`model.set({name: "User Name"})` will cause the \<h1> to display "User Name".  And a subsequent `model.set({name: "Updated User Name"})` will cause the \<h1> to display "Updated User Name".
+`model.set({name: "User Name"})` will cause the \<h1> to display "User Name".  
+A subsequent `model.set({name: "Updated User Name"})` will cause the \<h1> to display "Updated User Name".
 
-There are several varieties of binding which allow the binding of tag content and tag attributes, as well as formatting tag content.
+There are several varieties of bindings which allow the binding of tag content and tag attributes, as well as formatting tag content.
 
 #### Computed Attributes
 Computed attributes are model attributes which rely on other model attributes.
