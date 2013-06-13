@@ -130,6 +130,7 @@ var ContactForm = Traction.Forms.Form.extend({
 })
 ```
 Template:
+
 ```HTML
 <form>
   Welcome! Please enter your email address:
@@ -144,9 +145,10 @@ Template:
 
 ```Javascript
   var model = new Backbone.Model()
-  var contactForm = new ContactForm({model: model})
+  var contactForm = new ContactForm({model: model}).render()
 ```
-
+Yields (roughly):
+```HTML
 <form>
   Welcome! Please enter your email address:
   <lable for="email_field">Email</lable>
@@ -158,7 +160,7 @@ Template:
 
   <input type="sumbit"></input>
 </form>
-
+```
 ```Javascript
 // Type "email@example.com" into email field
 model.get("email") // "email@example.com"
