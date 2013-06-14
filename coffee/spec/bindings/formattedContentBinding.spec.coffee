@@ -8,15 +8,11 @@ describe "formatted content binding", ->
     model   = new Backbone.Model({name: "Original Name"})
 
     beforeEach ->
-      Traction.TemplateHelpers.Formatting ||= {
-        downcase: ->
-        append: ->
+      @originalHelpers = Traction.TemplateHelpers.Formatting
+      Traction.TemplateHelpers.Formatting = {
+        downcase: (string) -> string.toLowerCase()
+        append: (string, appended) -> string + appended
       }
-
-      spyOn(Traction.TemplateHelpers.Formatting, "downcase")
-        .andCallFake(String.prototype.toLowerCase)
-      spyOn(Traction.TemplateHelpers.Formatting, "append")
-        .andCallFake((appended) -> this + appended)
 
     createBinding = (specification) ->
       new Traction.Bindings.FormattedContentBinding(element, specification).bindTo(model)
@@ -37,3 +33,6 @@ describe "formatted content binding", ->
       createBinding("name|downcase")
       model.set("name", "Updated Name")
       expect(element.innerHTML).toBe "updated name"
+
+    afterEach ->
+      Traction.TemplateHelpers.Formatting = @originalHelpers

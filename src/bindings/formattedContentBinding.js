@@ -15,7 +15,7 @@
       this.specification = specification;
       _ref = this.specification.split("|"), this.property = _ref[0], this.formatters = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
       this.formattingFunctions = _.map(this.formatters, function(formatter) {
-        return _this._buildFormattingFunction(formatter);
+        return _this._callFormattingFunction(formatter);
       });
     }
 
@@ -25,13 +25,16 @@
       }), this.model.get(this.property));
     };
 
-    FormattedContentBinding.prototype._buildFormattingFunction = function(formatter) {
+    FormattedContentBinding.prototype._callFormattingFunction = function(formatter) {
       var args, formattingFunction, _ref;
       _ref = formatter.split(":"), formatter = _ref[0], args = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
-      formattingFunction = Traction.TemplateHelpers.Formatting[formatter];
-      return function(string) {
-        return formattingFunction.apply(string, args);
-      };
+      if (formattingFunction = Traction.TemplateHelpers.Formatting[formatter]) {
+        return function(content) {
+          return formattingFunction(content, args);
+        };
+      } else {
+        throw "Can't find formatter: " + formatter;
+      }
     };
 
     return FormattedContentBinding;

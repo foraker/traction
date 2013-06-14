@@ -1,7 +1,7 @@
 class Traction.Bindings.FormattedContentBinding extends Traction.Bindings.Binding
   constructor: (@el, @specification) ->
     [@property, @formatters...] = @specification.split("|")
-    @formattingFunctions = _.map @formatters, (formatter) => @_buildFormattingFunction(formatter)
+    @formattingFunctions = _.map @formatters, (formatter) => @_callFormattingFunction(formatter)
 
   update: (options) ->
     @el.innerHTML = _.reduce(
@@ -12,9 +12,10 @@ class Traction.Bindings.FormattedContentBinding extends Traction.Bindings.Bindin
 
   # Private
 
-  _buildFormattingFunction: (formatter) ->
+  _callFormattingFunction: (formatter) ->
     [formatter, args...] = formatter.split(":")
-    formattingFunction = Traction.TemplateHelpers.Formatting[formatter]
 
-    (string) ->
-      formattingFunction.apply(string, args)
+    if formattingFunction = Traction.TemplateHelpers.Formatting[formatter]
+      (content) ->  formattingFunction(content, args)
+    else
+      throw("Can't find formatter: #{formatter}")

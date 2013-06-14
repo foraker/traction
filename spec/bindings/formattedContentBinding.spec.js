@@ -12,15 +12,15 @@
         name: "Original Name"
       });
       beforeEach(function() {
-        var _base;
-        (_base = Traction.TemplateHelpers).Formatting || (_base.Formatting = {
-          downcase: function() {},
-          append: function() {}
-        });
-        spyOn(Traction.TemplateHelpers.Formatting, "downcase").andCallFake(String.prototype.toLowerCase);
-        return spyOn(Traction.TemplateHelpers.Formatting, "append").andCallFake(function(appended) {
-          return this + appended;
-        });
+        this.originalHelpers = Traction.TemplateHelpers.Formatting;
+        return Traction.TemplateHelpers.Formatting = {
+          downcase: function(string) {
+            return string.toLowerCase();
+          },
+          append: function(string, appended) {
+            return string + appended;
+          }
+        };
       });
       createBinding = function(specification) {
         return new Traction.Bindings.FormattedContentBinding(element, specification).bindTo(model);
@@ -37,10 +37,13 @@
         createBinding("name|downcase|append:zzz");
         return expect(element.innerHTML).toBe("original namezzz");
       });
-      return it("updates the content of the element when the property changes", function() {
+      it("updates the content of the element when the property changes", function() {
         createBinding("name|downcase");
         model.set("name", "Updated Name");
         return expect(element.innerHTML).toBe("updated name");
+      });
+      return afterEach(function() {
+        return Traction.TemplateHelpers.Formatting = this.originalHelpers;
       });
     });
   });
