@@ -21,8 +21,8 @@ class Traction.View extends Backbone.View
     @listenTo target, event, callback
 
   render: ->
-    @renderer.render(binding: @binding)
-    @renderer.outlet(@children.render())
+    @children.render()
+    @renderer.call(bindTo: @model, children: @children)
     @
 
   remove: ->

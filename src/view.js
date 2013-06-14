@@ -43,10 +43,11 @@
     };
 
     View.prototype.render = function() {
-      this.renderer.render({
-        binding: this.binding
+      this.children.render();
+      this.renderer.call({
+        bindTo: this.model,
+        children: this.children
       });
-      this.renderer.outlet(this.children.render());
       return this;
     };
 

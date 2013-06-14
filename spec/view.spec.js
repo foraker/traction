@@ -89,30 +89,27 @@
     describe("#render", function() {
       return beforeEach(function() {
         this.view = new Traction.View();
+        this.children = {
+          render: function() {}
+        };
         this.view.renderer = {
-          render: function() {
+          call: function() {
             return this;
           }
         };
-        this.view.children = {
-          render: function() {}
-        };
-        it("renders via the renderer with the proper binding", function() {
-          spyOn(this.view.renderer, "render");
-          this.view.render();
-          return expect(this.view.renderer.render).toHaveBeenCalledWith({
-            binding: this.view.binding
-          });
-        });
+        this.view.children = this.children;
         it("renders its children", function() {
           spyOn(this.view.children, "render");
           this.view.render();
           return expect(this.view.children.render).toHaveBeenCalled();
         });
-        it("outlets its children to the renderer", function() {
-          spyOn(this.view.renderer, "outlet");
+        it("calls the renderer", function() {
+          spyOn(this.view.renderer, "call");
           this.view.render();
-          return expect(this.view.renderer.outlet).toHaveBeenCalledWith(this.view.children);
+          return expect(this.view.renderer.call).toHaveBeenCalledWith({
+            bindTo: this.view.binding,
+            children: this.children
+          });
         });
         return it("returns itself", function() {
           return expect(this.view.render()).toBe(this.view);

@@ -65,24 +65,23 @@ describe "view", ->
 
   describe "#render", ->
     beforeEach ->
-      @view = new Traction.View()
-      @view.renderer = {render: -> @}
-      @view.children = {render: ->}
-
-      it "renders via the renderer with the proper binding", ->
-        spyOn(@view.renderer, "render")
-        @view.render()
-        expect(@view.renderer.render).toHaveBeenCalledWith(binding: @view.binding)
+      @view          = new Traction.View()
+      @children      = {render: ->}
+      @view.renderer = {call: -> @}
+      @view.children = @children
 
       it "renders its children", ->
         spyOn(@view.children, "render")
         @view.render()
         expect(@view.children.render).toHaveBeenCalled()
 
-      it "outlets its children to the renderer", ->
-        spyOn(@view.renderer, "outlet")
+      it "calls the renderer", ->
+        spyOn(@view.renderer, "call")
         @view.render()
-        expect(@view.renderer.outlet).toHaveBeenCalledWith(@view.children)
+        expect(@view.renderer.call).toHaveBeenCalledWith(
+          bindTo: @view.binding
+          children: @children
+        )
 
       it "returns itself", ->
         expect(@view.render()).toBe @view
