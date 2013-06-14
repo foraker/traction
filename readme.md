@@ -39,23 +39,23 @@ There are several varieties of bindings which allow the binding of tag content a
 Computed attributes are model attributes which rely on other model attributes.
 ```Javascript
 var User = Traction.Model.extend({
-  computed_attributes: {
+  computedAttributes: {
     fullName: function() {
-      [this.get("firstName"), this.get("lastName")].join(" ")
+      return [this.get("firstName"), this.get("lastName")].join(" ")
     }
   }
 });
 
-var user = new User({first_name: "Timothy", last_name: "Tanks"});
+var user = new User({firstName: "Timothy", lastName: "Tanks"});
 alert(user.get("fullName")); // alerts 'Timothy Tanks'
 
-user.set({last_name: "Twain"})
+user.set({lastName: "Twain"})
 alert(user.get("fullName")); // alerts 'Timothy Twain'
 
 user.on("change:fullName", function(){
   alert("fullName changed")
 })
-user.set({first_name: "Crindy"}) // alerts 'fullName changed'
+user.set({firstName: "Crindy"}) // alerts 'fullName changed'
 ```
 
 `change:<attribute>` events allow you to set up bindings to computed attributes.
