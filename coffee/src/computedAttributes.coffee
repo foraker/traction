@@ -1,6 +1,6 @@
 class Traction.Model extends Backbone.Model
   constructor: ->
-    Backbone.Model.apply(@, arguments)
+    super
     @computedAttributes ||= {}
     @_assignComputedAttributes()
 

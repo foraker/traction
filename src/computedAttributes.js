@@ -9,7 +9,7 @@
     __extends(Model, _super);
 
     function Model() {
-      Backbone.Model.apply(this, arguments);
+      Model.__super__.constructor.apply(this, arguments);
       this.computedAttributes || (this.computedAttributes = {});
       this._assignComputedAttributes();
     }
