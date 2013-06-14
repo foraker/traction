@@ -34,7 +34,7 @@ class Traction.Forms.Form extends Traction.View
 
   _defaults: (options) ->
     {
-      name: options.attribute + "_field"
+      name: options.attribute
       label: @_generateLabel(options.attribute)
       type: Traction.Forms.TextField
       model: @model

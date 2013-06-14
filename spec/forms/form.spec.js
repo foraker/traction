@@ -51,7 +51,7 @@
         this.form.addInput({
           attribute: "email"
         });
-        return expect(this.form.children.add).toHaveBeenCalledWith('email_field', this.input);
+        return expect(this.form.children.add).toHaveBeenCalledWith('email', this.input);
       });
       return it("allows the child name to be specified", function() {
         spyOn(this.form.children, "add");
