@@ -2,8 +2,15 @@
 (function() {
 
   Traction.TemplateHelpers.Formatting = {
-    downcase: function() {},
-    upcase: function() {}
+    downcase: function(string) {
+      return string.toLowerCase();
+    },
+    upcase: function(string) {
+      return string.toUpperCase();
+    },
+    append: function(string, append) {
+      return string + append;
+    }
   };
 
 }).call(this);

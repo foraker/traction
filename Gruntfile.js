@@ -4,7 +4,7 @@ module.exports = function(grunt) {
     'src/computedAttributes.js',
     'src/view.js',
     'src/viewCollection.js',
-    'src/template_helpers/formatting',
+    'src/template_helpers/formatting.js',
     'src/rendering/nodeStrategy.js',
     'src/rendering/appendStrategy.js',
     'src/rendering/prerenderedStrategy.js',
