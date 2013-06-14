@@ -1,8 +1,6 @@
-`
-Traction = {
-  Rendering: {},
-  Bindings: {},
-  TemplateHelpers: {},
-  Rails: {},
-  Forms: {}
-}`
+window.Traction =
+  Rendering:       {}
+  Bindings:        {}
+  TemplateHelpers: {}
+  Rails:           {}
+  Forms:           {}
