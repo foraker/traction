@@ -32,7 +32,7 @@
 
     ViewCollection.prototype.map = function(callback) {
       return _.map(this.collection, function(child, name) {
-        return callback(child);
+        return callback(child, name);
       });
     };
 

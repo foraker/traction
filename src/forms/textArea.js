@@ -11,8 +11,6 @@
       return TextArea.__super__.constructor.apply(this, arguments);
     }
 
-    TextArea.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
-
     TextArea.prototype.inputTemplate = _.template("<textarea id=\"<%= options.id %>\" name=\"<%= options.name %>\" placeholder=\"<%= options.placeholder %>\"/>");
 
     TextArea.prototype.events = {

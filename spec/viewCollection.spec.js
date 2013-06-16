@@ -28,12 +28,12 @@
     });
     describe("#map", function() {
       beforeEach(function() {
-        this.collection.add(this.view);
+        this.collection.add("child", this.view);
         return this.callback = jasmine.createSpy().andReturn("result");
       });
       it("calls the callback for each member", function() {
         this.collection.map(this.callback);
-        return expect(this.callback).toHaveBeenCalledWith(this.view);
+        return expect(this.callback).toHaveBeenCalledWith(this.view, "child");
       });
       return it("maps each member to the result of a callback", function() {
         return expect(this.collection.map(this.callback)).toEqual(["result"]);

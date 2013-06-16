@@ -146,7 +146,7 @@
 
   })(Backbone.View);
 
-  Traction.View.extend = function(klass) {
+  Traction.View["extends"] = function(klass) {
     return _.extend(this.prototype, klass.prototype);
   };
 
@@ -185,7 +185,7 @@
 
     ViewCollection.prototype.map = function(callback) {
       return _.map(this.collection, function(child, name) {
-        return callback(child);
+        return callback(child, name);
       });
     };
 
@@ -251,14 +251,11 @@
     NodeStrategy.prototype._outlet = function(children) {
       var _this = this;
       return this.$("script[data-outlet]").each(function(index, el) {
-        var childEls, name;
+        var name;
         if (name = $(el).data("outlet")) {
-          return $(el).replaceWith(children[name].el);
+          return $(el).replaceWith(children.get(name).el);
         } else {
-          childEls = _.map(children, function(child, name) {
-            return child.el;
-          });
-          return $(el).replaceWith(childEls);
+          return $(el).replaceWith(children.els);
         }
       });
     };
@@ -755,6 +752,8 @@
       return Field.__super__.constructor.apply(this, arguments);
     }
 
+    Field.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
+
     Field.prototype.className = "field";
 
     Field.prototype.initialize = function() {
@@ -794,7 +793,7 @@
     };
 
     Field.prototype.clear = function() {
-      this._input().val("");
+      this.set("");
       return this.clearErrors();
     };
 
@@ -874,8 +873,6 @@
       return TextField.__super__.constructor.apply(this, arguments);
     }
 
-    TextField.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
-
     TextField.prototype.inputTemplate = _.template("<input id=\"<%= options.id %>\" type=\"text\" name=\"<%= options.name %>\" placeholder=\"<%= options.placeholder %>\"/>");
 
     TextField.prototype.events = {
@@ -899,8 +896,6 @@
     function TextArea() {
       return TextArea.__super__.constructor.apply(this, arguments);
     }
-
-    TextArea.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
 
     TextArea.prototype.inputTemplate = _.template("<textarea id=\"<%= options.id %>\" name=\"<%= options.name %>\" placeholder=\"<%= options.placeholder %>\"/>");
 
@@ -929,8 +924,6 @@
     function Select() {
       return Select.__super__.constructor.apply(this, arguments);
     }
-
-    Select.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
 
     Select.prototype.inputTemplate = _.template("<select id=\"input-<%= options.id %>\" name=\"<%= options.name %>\">\n  <% if(options.includeBlank) { %><option><%= options.includeBlank %></option><% } %>\n  <% _.each(options.options, function(value, label){ %>\n    <option value=\"<%= value %>\"><%= label %></option>\n  <% }) %>\n</select>");
 
@@ -967,13 +960,64 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Traction.Forms.Form = (function(_super) {
+  Traction.Forms.Checkbox = (function(_super) {
 
-    __extends(Form, _super);
+    __extends(Checkbox, _super);
 
-    function Form() {
-      return Form.__super__.constructor.apply(this, arguments);
+    function Checkbox() {
+      return Checkbox.__super__.constructor.apply(this, arguments);
     }
+
+    Checkbox.prototype.inputTemplate = _.template("<input type=\"checkbox\" id=\"<%= options.id %>\" name=\"<%= options.name %>\">");
+
+    Checkbox.prototype.events = {
+      "change input": "applyAutoCommit"
+    };
+
+    Checkbox.prototype.get = function() {
+      if (this._input().is(":checked")) {
+        return this.options.checkedValue;
+      } else {
+        return this.options.uncheckedValue;
+      }
+    };
+
+    Checkbox.prototype.set = function(val) {
+      return this._input().prop("checked", this._checkedTest(val));
+    };
+
+    Checkbox.prototype.clear = function() {
+      this.set(this.options.uncheckedValue);
+      return this.clearErrors();
+    };
+
+    Checkbox.prototype._defaults = function() {
+      return _.extend(Checkbox.__super__._defaults.apply(this, arguments), {
+        checkedValue: true,
+        uncheckedValue: null,
+        checkedTest: function(val) {
+          return val === this.options.checkedValue;
+        }
+      });
+    };
+
+    Checkbox.prototype._checkedTest = function(val) {
+      return this.options.checkedTest.call(this, val);
+    };
+
+    return Checkbox;
+
+  })(Traction.Forms.Field);
+
+}).call(this);
+;// Generated by CoffeeScript 1.3.3
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  Traction.Forms.Form = (function() {
+
+    function Form() {}
 
     Form.prototype.addInput = function(options) {
       var klass, name;
@@ -1045,6 +1089,20 @@
     };
 
     return Form;
+
+  })();
+
+  Traction.Forms.FormView = (function(_super) {
+
+    __extends(FormView, _super);
+
+    function FormView() {
+      return FormView.__super__.constructor.apply(this, arguments);
+    }
+
+    FormView["extends"](Traction.Forms.Form);
+
+    return FormView;
 
   })(Traction.View);
 

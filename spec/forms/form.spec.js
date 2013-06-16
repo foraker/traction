@@ -4,7 +4,7 @@
   describe("form", function() {
     beforeEach(function() {
       this.model = {};
-      return this.form = new Traction.Forms.Form({
+      return this.form = new Traction.Forms.FormView({
         model: this.model
       });
     });

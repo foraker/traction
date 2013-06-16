@@ -11,6 +11,8 @@
       return Field.__super__.constructor.apply(this, arguments);
     }
 
+    Field.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
+
     Field.prototype.className = "field";
 
     Field.prototype.initialize = function() {
@@ -50,7 +52,7 @@
     };
 
     Field.prototype.clear = function() {
-      this._input().val("");
+      this.set("");
       return this.clearErrors();
     };
 

@@ -66,7 +66,7 @@
 
   })(Backbone.View);
 
-  Traction.View.extend = function(klass) {
+  Traction.View["extends"] = function(klass) {
     return _.extend(this.prototype, klass.prototype);
   };
 

@@ -11,8 +11,6 @@
       return TextField.__super__.constructor.apply(this, arguments);
     }
 
-    TextField.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
-
     TextField.prototype.inputTemplate = _.template("<input id=\"<%= options.id %>\" type=\"text\" name=\"<%= options.name %>\" placeholder=\"<%= options.placeholder %>\"/>");
 
     TextField.prototype.events = {

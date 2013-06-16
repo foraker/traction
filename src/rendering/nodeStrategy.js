@@ -26,14 +26,11 @@
     NodeStrategy.prototype._outlet = function(children) {
       var _this = this;
       return this.$("script[data-outlet]").each(function(index, el) {
-        var childEls, name;
+        var name;
         if (name = $(el).data("outlet")) {
-          return $(el).replaceWith(children[name].el);
+          return $(el).replaceWith(children.get(name).el);
         } else {
-          childEls = _.map(children, function(child, name) {
-            return child.el;
-          });
-          return $(el).replaceWith(childEls);
+          return $(el).replaceWith(children.els);
         }
       });
     };
