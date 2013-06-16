@@ -3,13 +3,9 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Traction.Forms.Form = (function(_super) {
+  Traction.Forms.Form = (function() {
 
-    __extends(Form, _super);
-
-    function Form() {
-      return Form.__super__.constructor.apply(this, arguments);
-    }
+    function Form() {}
 
     Form.prototype.addInput = function(options) {
       var klass, name;
@@ -81,6 +77,20 @@
     };
 
     return Form;
+
+  })();
+
+  Traction.Forms.FormView = (function(_super) {
+
+    __extends(FormView, _super);
+
+    function FormView() {
+      return FormView.__super__.constructor.apply(this, arguments);
+    }
+
+    FormView["extends"](Traction.Forms.Form);
+
+    return FormView;
 
   })(Traction.View);
 

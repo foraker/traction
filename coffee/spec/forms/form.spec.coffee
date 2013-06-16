@@ -1,7 +1,7 @@
 describe "form", ->
   beforeEach ->
     @model = {}
-    @form  = new Traction.Forms.Form(model: @model)
+    @form  = new Traction.Forms.FormView(model: @model)
 
   describe "#addInput", ->
     beforeEach ->
