@@ -1,4 +1,10 @@
 class Traction.Forms.Field extends Backbone.View
+  labelTemplate: _.template """
+    <label for="<%= options.id %>">
+      <% if(options.required) { %><i>*</i><% } %> <%= options.label %>
+    </label>
+  """
+
   className: "field"
 
   initialize: ->
@@ -30,7 +36,7 @@ class Traction.Forms.Field extends Backbone.View
     @_input().val(val)
 
   clear: ->
-    @_input().val("")
+    @set("")
     @clearErrors()
 
   clearErrors: ->

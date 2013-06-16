@@ -1,10 +1,4 @@
 class Traction.Forms.Select extends Traction.Forms.Field
-  labelTemplate: _.template """
-    <label for="<%= options.id %>">
-      <% if(options.required) { %><i>*</i><% } %> <%= options.label %>
-    </label>
-  """
-
   inputTemplate: _.template """
     <select id="input-<%= options.id %>" name="<%= options.name %>">
       <% if(options.includeBlank) { %><option><%= options.includeBlank %></option><% } %>
