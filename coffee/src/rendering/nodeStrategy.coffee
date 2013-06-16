@@ -15,10 +15,9 @@ class Traction.Rendering.NodeStrategy extends Backbone.View
   _outlet: (children) ->
     @$("script[data-outlet]").each (index, el) =>
       if name = $(el).data("outlet")
-        $(el).replaceWith(children[name].el)
+        $(el).replaceWith(children.get(name).el)
       else
-        childEls = _.map children, (child, name) -> child.el
-        $(el).replaceWith childEls
+        $(el).replaceWith children.els
 
   _applyBindings: (binding) ->
     @$("[data-bind]").each (index, el) =>

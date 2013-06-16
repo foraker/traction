@@ -78,21 +78,19 @@
         });
       });
       return describe("outletting", function() {
-        it("outlets all children", function() {
-          var child, renderer;
+        it("outlets all children els", function() {
+          var children, renderer;
           renderer = rendererWithContent("<script data-outlet=''></script>");
-          child = {
-            el: "<p>child content</p>"
+          children = {
+            els: ["<p>child content</p>"]
           };
           renderer.call({
-            children: {
-              childName: child
-            }
+            children: children
           });
           return expect(renderer.el.innerHTML).toEqual("<p>child content</p>");
         });
         return it("can outlet specific children", function() {
-          var child1, child2, renderer;
+          var child1, child2, children, renderer;
           renderer = rendererWithContent("<script data-outlet='child1'></script>\n<span><script data-outlet='child2'></script></span>");
           child1 = {
             el: "<p>Child 1 Content</p>"
@@ -100,11 +98,16 @@
           child2 = {
             el: "<p>Child 2 Content</p>"
           };
-          renderer.call({
-            children: {
-              child1: child1,
-              child2: child2
+          children = {
+            get: function(name) {
+              return {
+                child1: child1,
+                child2: child2
+              }[name];
             }
+          };
+          renderer.call({
+            children: children
           });
           return expect(renderer.el.innerHTML).toEqual("<p>Child 1 Content</p>\n<span><p>Child 2 Content</p></span>");
         });

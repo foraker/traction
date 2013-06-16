@@ -57,10 +57,10 @@ describe "prerendered element rendering strategy", ->
         expect(@binding.bindTo).toHaveBeenCalledWith(model)
 
     describe "outletting", ->
-      it "outlets all children", ->
+      it "outlets all children els", ->
         renderer = rendererWithContent("<script data-outlet=''></script>")
-        child = {el: "<p>child content</p>"}
-        renderer.call(children: {childName: child})
+        children = {els: ["<p>child content</p>"]}
+        renderer.call(children: children)
         expect(renderer.el.innerHTML).toEqual "<p>child content</p>"
 
       it "can outlet specific children", ->
@@ -69,10 +69,13 @@ describe "prerendered element rendering strategy", ->
           <span><script data-outlet='child2'></script></span>
         """)
 
-        child1 = {el: "<p>Child 1 Content</p>"}
-        child2 = {el: "<p>Child 2 Content</p>"}
+        child1   = {el: "<p>Child 1 Content</p>"}
+        child2   = {el: "<p>Child 2 Content</p>"}
+        children = {
+          get: (name) -> {child1: child1, child2: child2}[name]
+        }
 
-        renderer.call(children: {child1: child1, child2: child2})
+        renderer.call(children: children)
         expect(renderer.el.innerHTML).toEqual("""
           <p>Child 1 Content</p>
           <span><p>Child 2 Content</p></span>

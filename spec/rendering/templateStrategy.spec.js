@@ -110,23 +110,21 @@
         });
       });
       return describe("outletting", function() {
-        it("outlets all children", function() {
-          var child;
+        it("outlets all children els", function() {
+          var children;
           this.renderer.template = function() {
             return "<script data-outlet=''></script>";
           };
-          child = {
-            el: "<p>child content</p>"
+          children = {
+            els: ["<p>child content</p>"]
           };
           this.renderer.call({
-            children: {
-              childName: child
-            }
+            children: children
           });
           return expect(this.renderer.el.innerHTML).toEqual("<p>child content</p>");
         });
         return it("can outlet specific children", function() {
-          var child1, child2;
+          var child1, child2, children;
           this.renderer.template = function() {
             return "<script data-outlet='child1'></script>\n<span><script data-outlet='child2'></script></span>";
           };
@@ -136,11 +134,16 @@
           child2 = {
             el: "<p>Child 2 Content</p>"
           };
-          this.renderer.call({
-            children: {
-              child1: child1,
-              child2: child2
+          children = {
+            get: function(name) {
+              return {
+                child1: child1,
+                child2: child2
+              }[name];
             }
+          };
+          this.renderer.call({
+            children: children
           });
           return expect(this.renderer.el.innerHTML).toEqual("<p>Child 1 Content</p>\n<span><p>Child 2 Content</p></span>");
         });
