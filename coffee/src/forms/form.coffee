@@ -1,4 +1,4 @@
-class Traction.Forms.Form extends Traction.View
+class Traction.Forms.Form
   addInput: (options) ->
     options = _.extend(@_defaults(options), options)
     (name = options.name) and delete options.name
@@ -42,3 +42,6 @@ class Traction.Forms.Form extends Traction.View
 
   _generateLabel: (attribute) ->
     _.str.capitalize(_.str.humanize(attribute))
+
+class Traction.Forms.FormView extends Traction.View
+  @extends(Traction.Forms.Form)
