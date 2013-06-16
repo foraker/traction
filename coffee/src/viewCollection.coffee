@@ -15,7 +15,7 @@ class Traction.ViewCollection
     callback(member) for name, member of @collection
 
   map: (callback) ->
-    _.map(@collection, (child, name) -> callback(child))
+    _.map(@collection, (child, name) -> callback(child, name))
 
   render: ->
     @each (member) -> member.render().delegateEvents()

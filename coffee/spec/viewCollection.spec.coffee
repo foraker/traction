@@ -22,12 +22,12 @@ describe "view collection", ->
 
   describe "#map", ->
     beforeEach ->
-      @collection.add(@view)
+      @collection.add("child", @view)
       @callback = jasmine.createSpy().andReturn("result")
 
     it "calls the callback for each member", ->
       @collection.map(@callback)
-      expect(@callback).toHaveBeenCalledWith(@view)
+      expect(@callback).toHaveBeenCalledWith(@view, "child")
 
     it "maps each member to the result of a callback", ->
       expect(@collection.map(@callback)).toEqual ["result"]
