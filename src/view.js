@@ -66,8 +66,12 @@
 
   })(Backbone.View);
 
+  Traction.View.mixin = function(object) {
+    return _.extend(this.prototype, object);
+  };
+
   Traction.View["extends"] = function(klass) {
-    return _.extend(this.prototype, klass.prototype);
+    return this.mixin(klass.prototype);
   };
 
 }).call(this);

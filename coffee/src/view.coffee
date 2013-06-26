@@ -30,4 +30,9 @@ class Traction.View extends Backbone.View
     @renderer.destroy?()
     @children.each (child) -> child.remove()
 
-Traction.View.extends = (klass) -> _.extend(@prototype, klass.prototype)
+Traction.View.mixin = (object) ->
+  _.extend(@prototype, object)
+
+Traction.View.extends = (klass) ->
+ @mixin(klass.prototype)
+
