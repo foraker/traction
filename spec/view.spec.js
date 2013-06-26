@@ -27,7 +27,7 @@
         });
         it("instantiates an Template rendering strategy", function() {
           return expect(Traction.Rendering.TemplateStrategy).toHaveBeenCalledWith({
-            source: "path/to/template",
+            template: "path/to/template",
             renderWithin: this.view.el
           });
         });

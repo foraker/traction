@@ -6,7 +6,7 @@ class Traction.View extends Backbone.View
 
   buildRenderer: ->
     if @template
-      new Traction.Rendering.TemplateStrategy({source: @template, renderWithin: @el})
+      new Traction.Rendering.TemplateStrategy({template: @template, renderWithin: @el})
     else if @options.el
       new Traction.Rendering.PrerenderedStrategy({renderWithin: @el})
     else

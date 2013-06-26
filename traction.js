@@ -96,7 +96,7 @@
     View.prototype.buildRenderer = function() {
       if (this.template) {
         return new Traction.Rendering.TemplateStrategy({
-          source: this.template,
+          template: this.template,
           renderWithin: this.el
         });
       } else if (this.options.el) {

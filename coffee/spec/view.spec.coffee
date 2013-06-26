@@ -11,7 +11,7 @@ describe "view", ->
 
       it "instantiates an Template rendering strategy", ->
         expect(Traction.Rendering.TemplateStrategy).toHaveBeenCalledWith({
-          source: "path/to/template"
+          template: "path/to/template"
           renderWithin: @view.el
         })
 

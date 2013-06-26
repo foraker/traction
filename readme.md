@@ -167,6 +167,7 @@ model.get("email") // "email@example.com"
 ```
 
 #### Rails Support
+
 #### Bootstrap Support
 
 ## Documentation
