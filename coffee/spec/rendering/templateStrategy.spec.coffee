@@ -29,10 +29,12 @@ describe "template rendering strategy", ->
       expect(@element.innerHTML).not.toContain "original content"
 
     it "calls the template function with the correct options", ->
+      binding = {}
       spyOn(@renderer, "template")
-      @renderer.call()
+      @renderer.call({bindTo: binding})
       expect(@renderer.template).toHaveBeenCalledWith({
         outlet: @renderer.buildOutlet
+        context: binding
       })
 
     it "appends the results of the template function", ->

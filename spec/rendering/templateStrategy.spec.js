@@ -47,10 +47,15 @@
         return expect(this.element.innerHTML).not.toContain("original content");
       });
       it("calls the template function with the correct options", function() {
+        var binding;
+        binding = {};
         spyOn(this.renderer, "template");
-        this.renderer.call();
+        this.renderer.call({
+          bindTo: binding
+        });
         return expect(this.renderer.template).toHaveBeenCalledWith({
-          outlet: this.renderer.buildOutlet
+          outlet: this.renderer.buildOutlet,
+          context: binding
         });
       });
       it("appends the results of the template function", function() {

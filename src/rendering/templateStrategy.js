@@ -17,7 +17,7 @@
       var templatePath;
       templatePath = "templates";
       return JST["" + templatePath + "/" + name] || (function() {
-        throw "Missing template: " + name;
+        throw "Missing template: " + templatePath + "/" + name;
       })();
     };
 
@@ -26,7 +26,9 @@
         options = {};
       }
       this.$el.empty();
-      this.el.innerHTML = this._template();
+      this.el.innerHTML = this._template({
+        context: options.bindTo
+      });
       this._applyBindings(options.bindTo);
       return this._outlet(options.children);
     };
