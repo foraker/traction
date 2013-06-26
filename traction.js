@@ -146,8 +146,12 @@
 
   })(Backbone.View);
 
+  Traction.View.mixin = function(object) {
+    return _.extend(this.prototype, object);
+  };
+
   Traction.View["extends"] = function(klass) {
-    return _.extend(this.prototype, klass.prototype);
+    return this.mixin(klass.prototype);
   };
 
 }).call(this);
@@ -255,7 +259,7 @@
         if (name = $(el).data("outlet")) {
           return $(el).replaceWith(children.get(name).el);
         } else {
-          return $(el).replaceWith(children.els);
+          return $(el).replaceWith(children.els());
         }
       });
     };
@@ -307,12 +311,14 @@
       return this.setElement(this.options.renderWithin);
     };
 
-    AppendStrategy.prototype.render = function() {
-      return this.$el.empty();
-    };
-
-    AppendStrategy.prototype.outlet = function(children) {
-      return this.$el.append(children.els());
+    AppendStrategy.prototype.call = function(options) {
+      if (options == null) {
+        options = {};
+      }
+      this.$el.empty();
+      if (options.children != null) {
+        return this.$el.append(options.children.els());
+      }
     };
 
     return AppendStrategy;
@@ -366,7 +372,7 @@
       var templatePath;
       templatePath = "templates";
       return JST["" + templatePath + "/" + name] || (function() {
-        throw "Missing template: " + name;
+        throw "Missing template: " + templatePath + "/" + name;
       })();
     };
 
@@ -375,7 +381,9 @@
         options = {};
       }
       this.$el.empty();
-      this.el.innerHTML = this._template();
+      this.el.innerHTML = this._template({
+        context: options.bindTo
+      });
       this._applyBindings(options.bindTo);
       return this._outlet(options.children);
     };
