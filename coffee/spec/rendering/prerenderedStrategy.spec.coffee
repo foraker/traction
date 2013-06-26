@@ -59,7 +59,7 @@ describe "prerendered element rendering strategy", ->
     describe "outletting", ->
       it "outlets all children els", ->
         renderer = rendererWithContent("<script data-outlet=''></script>")
-        children = {els: ["<p>child content</p>"]}
+        children = {els: -> ["<p>child content</p>"]}
         renderer.call(children: children)
         expect(renderer.el.innerHTML).toEqual "<p>child content</p>"
 

@@ -82,7 +82,9 @@
           var children, renderer;
           renderer = rendererWithContent("<script data-outlet=''></script>");
           children = {
-            els: ["<p>child content</p>"]
+            els: function() {
+              return ["<p>child content</p>"];
+            }
           };
           renderer.call({
             children: children

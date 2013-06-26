@@ -15,12 +15,14 @@
       return this.setElement(this.options.renderWithin);
     };
 
-    AppendStrategy.prototype.render = function() {
-      return this.$el.empty();
-    };
-
-    AppendStrategy.prototype.outlet = function(children) {
-      return this.$el.append(children.els());
+    AppendStrategy.prototype.call = function(options) {
+      if (options == null) {
+        options = {};
+      }
+      this.$el.empty();
+      if (options.children != null) {
+        return this.$el.append(options.children.els());
+      }
     };
 
     return AppendStrategy;

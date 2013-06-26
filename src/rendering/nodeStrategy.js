@@ -30,7 +30,7 @@
         if (name = $(el).data("outlet")) {
           return $(el).replaceWith(children.get(name).el);
         } else {
-          return $(el).replaceWith(children.els);
+          return $(el).replaceWith(children.els());
         }
       });
     };

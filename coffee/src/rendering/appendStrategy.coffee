@@ -2,8 +2,7 @@ class Traction.Rendering.AppendStrategy extends Backbone.View
   initialize: ->
     @setElement @options.renderWithin
 
-  render: ->
+  call: (options = {})->
     @$el.empty()
-
-  outlet: (children) ->
-    @$el.append children.els()
+    if options.children?
+      @$el.append options.children.els()

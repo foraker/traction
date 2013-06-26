@@ -2,30 +2,26 @@
 (function() {
 
   describe("append rendering strategy", function() {
-    describe("rendering", function() {
-      return it("empties the element", function() {
-        var el, renderer;
-        el = $("<p>content</p>");
-        renderer = new Traction.Rendering.AppendStrategy({
-          renderWithin: el
-        });
-        renderer.render();
+    return describe("rendering", function() {
+      var el, renderer;
+      el = $("<p>content</p>");
+      renderer = new Traction.Rendering.AppendStrategy({
+        renderWithin: el
+      });
+      it("empties the element", function() {
+        renderer.call();
         return expect(el.html()).toBe("");
       });
-    });
-    return describe("outletting", function() {
       return it("appends the children els", function() {
-        var children, el, renderer;
-        el = $("<p></p>");
-        renderer = new Traction.Rendering.AppendStrategy({
-          renderWithin: el
-        });
+        var children;
         children = {
           els: function() {
             return "child content";
           }
         };
-        renderer.outlet(children);
+        renderer.call({
+          children: children
+        });
         return expect(el.html()).toBe("child content");
       });
     });

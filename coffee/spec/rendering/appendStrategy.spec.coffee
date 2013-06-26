@@ -1,15 +1,13 @@
 describe "append rendering strategy", ->
   describe "rendering", ->
+    el = $("<p>content</p>")
+    renderer = new Traction.Rendering.AppendStrategy(renderWithin: el)
+
     it "empties the element", ->
-      el = $("<p>content</p>")
-      renderer = new Traction.Rendering.AppendStrategy(renderWithin: el)
-      renderer.render()
+      renderer.call()
       expect(el.html()).toBe ""
 
-  describe "outletting", ->
     it "appends the children els", ->
-      el = $("<p></p>")
-      renderer = new Traction.Rendering.AppendStrategy(renderWithin: el)
       children = {els: -> "child content"}
-      renderer.outlet(children)
+      renderer.call(children: children)
       expect(el.html()).toBe "child content"

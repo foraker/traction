@@ -116,7 +116,9 @@
             return "<script data-outlet=''></script>";
           };
           children = {
-            els: ["<p>child content</p>"]
+            els: function() {
+              return ["<p>child content</p>"];
+            }
           };
           this.renderer.call({
             children: children
