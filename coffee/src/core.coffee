@@ -4,3 +4,6 @@ window.Traction =
   TemplateHelpers: {}
   Rails:           {}
   Forms:           {}
+  config: {
+    templatePath: "templates"
+  }

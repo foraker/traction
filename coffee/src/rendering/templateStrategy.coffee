@@ -5,11 +5,10 @@ class Traction.Rendering.TemplateStrategy extends Traction.Rendering.NodeStrateg
     super
 
   findTemplate: (name) ->
-    templatePath = "templates"
-    JST["#{templatePath}/#{name}"] || throw("Missing template: #{templatePath}/#{name}")
+    path = "#{Traction.config.templatePath}/#{name}"
+    JST[path] || throw("Missing template: #{path}")
 
   call: (options = {}) ->
-    @$el.empty()
     @el.innerHTML = @_template(context: options.bindTo)
     @_applyBindings(options.bindTo)
     @_outlet(options.children)
