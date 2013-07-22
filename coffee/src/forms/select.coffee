@@ -1,7 +1,7 @@
 class Traction.Forms.Select extends Traction.Forms.Field
   inputTemplate: _.template """
     <select id="input-<%= options.id %>" name="<%= options.name %>">
-      <% if(options.includeBlank) { %><option><%= options.includeBlank %></option><% } %>
+      <% if(options.includeBlank) { %><option value=""><%= options.includeBlank %></option><% } %>
       <% _.each(options.options, function(value, label){ %>
         <option value="<%= value %>"><%= label %></option>
       <% }) %>
@@ -14,6 +14,10 @@ class Traction.Forms.Select extends Traction.Forms.Field
   clear: ->
     @_input().val(@_firstOptionValue())
     @clearErrors()
+
+  setOptions: (options) ->
+    @options.options = options
+    @render()
 
   # Private
 
