@@ -11,7 +11,7 @@
       return Select.__super__.constructor.apply(this, arguments);
     }
 
-    Select.prototype.inputTemplate = _.template("<select id=\"input-<%= options.id %>\" name=\"<%= options.name %>\">\n  <% if(options.includeBlank) { %><option><%= options.includeBlank %></option><% } %>\n  <% _.each(options.options, function(value, label){ %>\n    <option value=\"<%= value %>\"><%= label %></option>\n  <% }) %>\n</select>");
+    Select.prototype.inputTemplate = _.template("<select id=\"input-<%= options.id %>\" name=\"<%= options.name %>\">\n  <% if(options.includeBlank) { %><option value=\"\"><%= options.includeBlank %></option><% } %>\n  <% _.each(options.options, function(value, label){ %>\n    <option value=\"<%= value %>\"><%= label %></option>\n  <% }) %>\n</select>");
 
     Select.prototype.events = {
       "change select": "applyAutoCommit"
@@ -20,6 +20,11 @@
     Select.prototype.clear = function() {
       this._input().val(this._firstOptionValue());
       return this.clearErrors();
+    };
+
+    Select.prototype.setOptions = function(options) {
+      this.options.options = options;
+      return this.render();
     };
 
     Select.prototype._firstOptionValue = function() {

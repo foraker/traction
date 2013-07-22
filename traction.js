@@ -6,7 +6,10 @@
     Bindings: {},
     TemplateHelpers: {},
     Rails: {},
-    Forms: {}
+    Forms: {},
+    config: {
+      templatePath: "templates"
+    }
   };
 
 }).call(this);
@@ -172,6 +175,13 @@
       }
     };
 
+    ViewCollection.prototype.destroy = function() {
+      this.each(function(child) {
+        return child.remove();
+      });
+      return this.collection = {};
+    };
+
     ViewCollection.prototype.get = function(name) {
       return this.collection[name];
     };
@@ -182,14 +192,14 @@
       _results = [];
       for (name in _ref) {
         member = _ref[name];
-        _results.push(callback(member));
+        _results.push(callback(member, name));
       }
       return _results;
     };
 
     ViewCollection.prototype.map = function(callback) {
-      return _.map(this.collection, function(child, name) {
-        return callback(child, name);
+      return _.map(this.collection, function(member, name) {
+        return callback(member, name);
       });
     };
 
@@ -223,6 +233,9 @@
     },
     append: function(string, append) {
       return string + append;
+    },
+    nonBreaking: function(string) {
+      return string || "&nbsp;";
     }
   };
 
@@ -237,7 +250,7 @@
     __extends(NodeStrategy, _super);
 
     NodeStrategy.prototype.events = {
-      "click :not(form)[data-emit]": "_emit",
+      "click [data-emit]:not(form)": "_emit",
       "submit form[data-emit]": "_emit"
     };
 
@@ -265,13 +278,19 @@
     };
 
     NodeStrategy.prototype._applyBindings = function(binding) {
-      var _this = this;
+      var existingBinding, _i, _len, _ref,
+        _this = this;
+      _ref = this.bindings;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        existingBinding = _ref[_i];
+        existingBinding.destroy();
+      }
       return this.$("[data-bind]").each(function(index, el) {
-        var specification, _i, _len, _ref, _results;
-        _ref = $(el).data("bind").split(" ");
+        var specification, _j, _len1, _ref1, _results;
+        _ref1 = $(el).data("bind").split(" ");
         _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          specification = _ref[_i];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          specification = _ref1[_j];
           _results.push(_this.bindings.push(Traction.Bindings.Factory(el, specification).bindTo(binding)));
         }
         return _results;
@@ -369,10 +388,10 @@
     }
 
     TemplateStrategy.prototype.findTemplate = function(name) {
-      var templatePath;
-      templatePath = "templates";
-      return JST["" + templatePath + "/" + name] || (function() {
-        throw "Missing template: " + templatePath + "/" + name;
+      var path;
+      path = "" + Traction.config.templatePath + "/" + name;
+      return JST[path] || (function() {
+        throw "Missing template: " + path;
       })();
     };
 
@@ -380,7 +399,6 @@
       if (options == null) {
         options = {};
       }
-      this.$el.empty();
       this.el.innerHTML = this._template({
         context: options.bindTo
       });
@@ -447,7 +465,7 @@
     }
 
     ContentBinding.prototype.update = function(options) {
-      return this.el.innerHTML = this.model.get(this.property);
+      return this.el.innerHTML = this.model.get(this.property) || "";
     };
 
     return ContentBinding;
@@ -735,9 +753,12 @@
 
     Collection.prototype.model = Traction.Rails.Model;
 
-    Collection.prototype.build = function() {
+    Collection.prototype.build = function(attributes) {
       var model;
-      model = new this.model;
+      if (attributes == null) {
+        attributes = {};
+      }
+      model = new this.model(attributes);
       model.urlRoot = this.url;
       return model;
     };
@@ -933,7 +954,7 @@
       return Select.__super__.constructor.apply(this, arguments);
     }
 
-    Select.prototype.inputTemplate = _.template("<select id=\"input-<%= options.id %>\" name=\"<%= options.name %>\">\n  <% if(options.includeBlank) { %><option><%= options.includeBlank %></option><% } %>\n  <% _.each(options.options, function(value, label){ %>\n    <option value=\"<%= value %>\"><%= label %></option>\n  <% }) %>\n</select>");
+    Select.prototype.inputTemplate = _.template("<select id=\"input-<%= options.id %>\" name=\"<%= options.name %>\">\n  <% if(options.includeBlank) { %><option value=\"\"><%= options.includeBlank %></option><% } %>\n  <% _.each(options.options, function(value, label){ %>\n    <option value=\"<%= value %>\"><%= label %></option>\n  <% }) %>\n</select>");
 
     Select.prototype.events = {
       "change select": "applyAutoCommit"
@@ -942,6 +963,11 @@
     Select.prototype.clear = function() {
       this._input().val(this._firstOptionValue());
       return this.clearErrors();
+    };
+
+    Select.prototype.setOptions = function(options) {
+      this.options.options = options;
+      return this.render();
     };
 
     Select.prototype._firstOptionValue = function() {
@@ -1035,6 +1061,17 @@
       return this.children.add(name, new klass(options));
     };
 
+    Form.prototype.addInputs = function(schema) {
+      var attribute, options, _results;
+      _results = [];
+      for (attribute in schema) {
+        options = schema[attribute];
+        options.attribute = attribute;
+        _results.push(this.addInput(options));
+      }
+      return _results;
+    };
+
     Form.prototype.serialize = function() {
       var serialized;
       serialized = {};
@@ -1045,18 +1082,15 @@
     };
 
     Form.prototype.renderErrors = function() {
-      var attribute, errors, input, _ref, _results;
-      _ref = this.children;
-      _results = [];
-      for (attribute in _ref) {
-        input = _ref[attribute];
-        if (errors = this.model.errors[attribute]) {
-          _results.push(input.rerenderErrors(errors));
+      var _this = this;
+      return this.children.each(function(child, attribute) {
+        var errors, _ref;
+        if (errors = (_ref = _this.model.errors) != null ? _ref[attribute] : void 0) {
+          return child.rerenderErrors(errors);
         } else {
-          _results.push(input.clearErrors());
+          return child.clearErrors();
         }
-      }
-      return _results;
+      });
     };
 
     Form.prototype.clearErrors = function() {

@@ -54,7 +54,7 @@
         field = createInstance({
           includeBlank: "Blank Label"
         }).render();
-        return expect(field.$("option:first").attr("value")).toBe(void 0);
+        return expect(field.$("option:first").attr("value")).toEqual("");
       });
     });
     return describe("#clear", function() {

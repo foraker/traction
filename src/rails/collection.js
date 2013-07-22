@@ -13,9 +13,12 @@
 
     Collection.prototype.model = Traction.Rails.Model;
 
-    Collection.prototype.build = function() {
+    Collection.prototype.build = function(attributes) {
       var model;
-      model = new this.model;
+      if (attributes == null) {
+        attributes = {};
+      }
+      model = new this.model(attributes);
       model.urlRoot = this.url;
       return model;
     };

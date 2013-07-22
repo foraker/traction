@@ -10,6 +10,9 @@
     },
     append: function(string, append) {
       return string + append;
+    },
+    nonBreaking: function(string) {
+      return string || "&nbsp;";
     }
   };
 

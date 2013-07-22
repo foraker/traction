@@ -15,6 +15,17 @@
       return this.children.add(name, new klass(options));
     };
 
+    Form.prototype.addInputs = function(schema) {
+      var attribute, options, _results;
+      _results = [];
+      for (attribute in schema) {
+        options = schema[attribute];
+        options.attribute = attribute;
+        _results.push(this.addInput(options));
+      }
+      return _results;
+    };
+
     Form.prototype.serialize = function() {
       var serialized;
       serialized = {};
@@ -25,18 +36,15 @@
     };
 
     Form.prototype.renderErrors = function() {
-      var attribute, errors, input, _ref, _results;
-      _ref = this.children;
-      _results = [];
-      for (attribute in _ref) {
-        input = _ref[attribute];
-        if (errors = this.model.errors[attribute]) {
-          _results.push(input.rerenderErrors(errors));
+      var _this = this;
+      return this.children.each(function(child, attribute) {
+        var errors, _ref;
+        if (errors = (_ref = _this.model.errors) != null ? _ref[attribute] : void 0) {
+          return child.rerenderErrors(errors);
         } else {
-          _results.push(input.clearErrors());
+          return child.clearErrors();
         }
-      }
-      return _results;
+      });
     };
 
     Form.prototype.clearErrors = function() {

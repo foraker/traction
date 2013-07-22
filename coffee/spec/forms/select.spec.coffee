@@ -35,7 +35,7 @@ describe "Traction.Forms.Select", ->
 
     it "creates a blank option with the correct value", ->
       field = createInstance({includeBlank: "Blank Label"}).render()
-      expect(field.$("option:first").attr("value")).toBe(undefined)
+      expect(field.$("option:first").attr("value")).toEqual("")
 
   describe "#clear", ->
     it "selects the first value", ->

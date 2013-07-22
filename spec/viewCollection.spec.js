@@ -17,13 +17,31 @@
         return expect(this.collection.get("ABC123")).toBe(this.view);
       });
     });
+    describe("#destroy", function() {
+      var child, remove;
+      remove = jasmine.createSpy();
+      child = {
+        remove: remove
+      };
+      beforeEach(function() {
+        return this.collection.add(child);
+      });
+      it("removes each child", function() {
+        this.collection.destroy();
+        return expect(remove).toHaveBeenCalled();
+      });
+      return it("empties the collection", function() {
+        this.collection.destroy();
+        return expect(this.collection.map(function() {})).toEqual([]);
+      });
+    });
     describe("#each", function() {
       return it("passes each member to a callback", function() {
         var callback;
         callback = jasmine.createSpy();
-        this.collection.add(this.view);
+        this.collection.add("child", this.view);
         this.collection.each(callback);
-        return expect(callback).toHaveBeenCalledWith(this.view);
+        return expect(callback).toHaveBeenCalledWith(this.view, "child");
       });
     });
     describe("#map", function() {

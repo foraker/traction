@@ -6,7 +6,10 @@
     Bindings: {},
     TemplateHelpers: {},
     Rails: {},
-    Forms: {}
+    Forms: {},
+    config: {
+      templatePath: "templates"
+    }
   };
 
 }).call(this);

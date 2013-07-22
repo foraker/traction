@@ -31,9 +31,9 @@ describe "view collection", ->
   describe "#each", ->
     it "passes each member to a callback", ->
       callback = jasmine.createSpy()
-      @collection.add(@view)
+      @collection.add("child", @view)
       @collection.each(callback)
-      expect(callback).toHaveBeenCalledWith(@view)
+      expect(callback).toHaveBeenCalledWith(@view, "child")
 
   describe "#map", ->
     beforeEach ->

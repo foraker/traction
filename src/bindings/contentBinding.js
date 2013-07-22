@@ -14,7 +14,7 @@
     }
 
     ContentBinding.prototype.update = function(options) {
-      return this.el.innerHTML = this.model.get(this.property);
+      return this.el.innerHTML = this.model.get(this.property) || "";
     };
 
     return ContentBinding;

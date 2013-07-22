@@ -14,10 +14,10 @@
     }
 
     TemplateStrategy.prototype.findTemplate = function(name) {
-      var templatePath;
-      templatePath = "templates";
-      return JST["" + templatePath + "/" + name] || (function() {
-        throw "Missing template: " + templatePath + "/" + name;
+      var path;
+      path = "" + Traction.config.templatePath + "/" + name;
+      return JST[path] || (function() {
+        throw "Missing template: " + path;
       })();
     };
 
@@ -25,7 +25,6 @@
       if (options == null) {
         options = {};
       }
-      this.$el.empty();
       this.el.innerHTML = this._template({
         context: options.bindTo
       });

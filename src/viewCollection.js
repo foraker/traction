@@ -15,6 +15,13 @@
       }
     };
 
+    ViewCollection.prototype.destroy = function() {
+      this.each(function(child) {
+        return child.remove();
+      });
+      return this.collection = {};
+    };
+
     ViewCollection.prototype.get = function(name) {
       return this.collection[name];
     };
@@ -25,14 +32,14 @@
       _results = [];
       for (name in _ref) {
         member = _ref[name];
-        _results.push(callback(member));
+        _results.push(callback(member, name));
       }
       return _results;
     };
 
     ViewCollection.prototype.map = function(callback) {
-      return _.map(this.collection, function(child, name) {
-        return callback(child, name);
+      return _.map(this.collection, function(member, name) {
+        return callback(member, name);
       });
     };
 

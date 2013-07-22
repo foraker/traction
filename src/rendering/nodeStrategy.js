@@ -8,7 +8,7 @@
     __extends(NodeStrategy, _super);
 
     NodeStrategy.prototype.events = {
-      "click :not(form)[data-emit]": "_emit",
+      "click [data-emit]:not(form)": "_emit",
       "submit form[data-emit]": "_emit"
     };
 
@@ -36,13 +36,19 @@
     };
 
     NodeStrategy.prototype._applyBindings = function(binding) {
-      var _this = this;
+      var existingBinding, _i, _len, _ref,
+        _this = this;
+      _ref = this.bindings;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        existingBinding = _ref[_i];
+        existingBinding.destroy();
+      }
       return this.$("[data-bind]").each(function(index, el) {
-        var specification, _i, _len, _ref, _results;
-        _ref = $(el).data("bind").split(" ");
+        var specification, _j, _len1, _ref1, _results;
+        _ref1 = $(el).data("bind").split(" ");
         _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          specification = _ref[_i];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          specification = _ref1[_j];
           _results.push(_this.bindings.push(Traction.Bindings.Factory(el, specification).bindTo(binding)));
         }
         return _results;
