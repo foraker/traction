@@ -3,4 +3,4 @@ class Traction.Bindings.ContentBinding extends Traction.Bindings.Binding
     @property = @specification
 
   update: (options) ->
-    @el.innerHTML = @model.get(@property)
+    @el.innerHTML = @model.get(@property) || ""
