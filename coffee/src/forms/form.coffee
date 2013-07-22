@@ -6,17 +6,22 @@ class Traction.Forms.Form
 
     @children.add name, new klass(options)
 
+  addInputs: (schema) ->
+    for attribute, options of schema
+      options.attribute = attribute
+      @addInput(options)
+
   serialize: ->
     serialized = {}
     @children.each (input) -> serialized[input.attribute] = input.val()
     serialized
 
   renderErrors: ->
-    for attribute, input of @children
-      if errors = @model.errors[attribute]
-        input.rerenderErrors(errors)
+    @children.each (child, attribute) =>
+      if errors = @model.errors?[attribute]
+        child.rerenderErrors(errors)
       else
-        input.clearErrors()
+        child.clearErrors()
 
   clearErrors: ->
     @children.each (input) -> input.clearErrors?()
