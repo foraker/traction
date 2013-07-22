@@ -8,14 +8,18 @@ class Traction.ViewCollection
     else
       @collection[_.uniqueId()] = nameOrMember
 
+  destroy: ->
+    @each (child) -> child.remove()
+    @collection = {}
+
   get: (name) ->
     @collection[name]
 
   each: (callback) ->
-    callback(member) for name, member of @collection
+    callback(member, name) for name, member of @collection
 
   map: (callback) ->
-    _.map(@collection, (child, name) -> callback(child, name))
+    _.map(@collection, (member, name) -> callback(member, name))
 
   render: ->
     @each (member) -> member.render().delegateEvents()

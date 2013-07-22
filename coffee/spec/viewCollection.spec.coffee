@@ -13,6 +13,21 @@ describe "view collection", ->
       @collection.add(@view)
       expect(@collection.get("ABC123")).toBe @view
 
+  describe "#destroy", ->
+    remove = jasmine.createSpy()
+    child  = {remove: remove}
+
+    beforeEach ->
+      @collection.add(child)
+
+    it "removes each child", ->
+      @collection.destroy()
+      expect(remove).toHaveBeenCalled()
+
+    it "empties the collection", ->
+      @collection.destroy()
+      expect(@collection.map ->).toEqual([])
+
   describe "#each", ->
     it "passes each member to a callback", ->
       callback = jasmine.createSpy()
