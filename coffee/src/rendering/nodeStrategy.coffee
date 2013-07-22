@@ -1,6 +1,6 @@
 class Traction.Rendering.NodeStrategy extends Backbone.View
   events:
-    "click :not(form)[data-emit]": "_emit"
+    "click [data-emit]:not(form)": "_emit"
     "submit form[data-emit]": "_emit"
 
   constructor: ->
@@ -20,6 +20,8 @@ class Traction.Rendering.NodeStrategy extends Backbone.View
         $(el).replaceWith children.els()
 
   _applyBindings: (binding) ->
+    existingBinding.destroy() for existingBinding in @bindings
+
     @$("[data-bind]").each (index, el) =>
       for specification in $(el).data("bind").split(" ")
         @bindings.push Traction.Bindings.Factory(el, specification).bindTo(binding)
