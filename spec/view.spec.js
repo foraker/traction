@@ -68,6 +68,71 @@
         });
       });
     });
+    describe("decorator registration", function() {
+      var decoratorClass, decoratorInstance, model;
+      model = {};
+      decoratorInstance = {};
+      decoratorClass = jasmine.createSpy().andReturn(decoratorInstance);
+      describe("a decorator class is specified", function() {
+        var View;
+        View = (function(_super) {
+
+          __extends(View, _super);
+
+          function View() {
+            return View.__super__.constructor.apply(this, arguments);
+          }
+
+          View.prototype.decorator = decoratorClass;
+
+          return View;
+
+        })(Traction.View);
+        beforeEach(function() {
+          return this.view = new View({
+            model: model
+          });
+        });
+        it("decorates the model with the specified class", function() {
+          return expect(decoratorClass).toHaveBeenCalledWith(model);
+        });
+        return it("assigns the decorator as the model", function() {
+          return expect(this.view.model).toBe(decoratorInstance);
+        });
+      });
+      return describe("decorator attributes are specified", function() {
+        var View, decoratorAttributes;
+        decoratorAttributes = {};
+        Traction.Decorator || (Traction.Decorator = {
+          extend: function() {}
+        });
+        View = (function(_super) {
+
+          __extends(View, _super);
+
+          function View() {
+            return View.__super__.constructor.apply(this, arguments);
+          }
+
+          View.prototype.decorator = decoratorAttributes;
+
+          return View;
+
+        })(Traction.View);
+        beforeEach(function() {
+          spyOn(Traction.Decorator, "extend").andReturn(decoratorClass);
+          return this.view = new View({
+            model: model
+          });
+        });
+        it("constructs a decorator", function() {
+          return expect(Traction.Decorator.extend).toHaveBeenCalledWith(decoratorAttributes);
+        });
+        return it("assigns the decorator as the model", function() {
+          return expect(this.view.model).toBe(decoratorInstance);
+        });
+      });
+    });
     describe("#proxyEvent", function() {
       beforeEach(function() {
         this.parent = new Traction.View();

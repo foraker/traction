@@ -1,14 +1,4 @@
-class Traction.Model extends Backbone.Model
-  constructor: ->
-    super
-    @computedAttributes ||= {}
-    @_assignComputedAttributes()
-
-  _assignComputedAttributes: ->
-    for attribute, computation of @computedAttributes
-      new ComputedAttribute(attribute, computation).bindTo(@)
-
-class ComputedAttribute
+class Traction.ComputedAttribute
   constructor: (@attribute, @computation) ->
 
   bindTo: (model) ->
@@ -24,3 +14,11 @@ class ComputedAttribute
 
   _assign: ->
     @model.set(@attribute, @computation.apply(@model))
+
+Traction.ComputedAttributes = {
+  _assignComputedAttributes: ->
+    @computedAttributes ||= {}
+
+    for attribute, computation of @computedAttributes
+      new Traction.ComputedAttribute(attribute, computation).bindTo(@)
+}

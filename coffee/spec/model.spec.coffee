@@ -1,9 +1,9 @@
-describe "computed attributes", ->
-  class TestClass extends Traction.Model
-    computedAttributes: {
-      fullName: -> [@get("firstName"), @get("lastName")].join(" ")
-    }
+class TestClass extends Traction.Model
+  computedAttributes: {
+    fullName: -> [@get("firstName"), @get("lastName")].join(" ")
+  }
 
+describe "computed attributes", ->
   beforeEach ->
     @model = new TestClass({firstName: "first", lastName: "last"})
 

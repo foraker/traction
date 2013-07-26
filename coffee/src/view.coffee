@@ -3,6 +3,7 @@ class Traction.View extends Backbone.View
     @children = new Traction.ViewCollection()
     super
     @renderer = @buildRenderer()
+    @model    = @buildDecorator(options.model) if @decorator
 
   buildRenderer: ->
     if @template
@@ -11,6 +12,13 @@ class Traction.View extends Backbone.View
       new Traction.Rendering.PrerenderedStrategy({renderWithin: @el})
     else
       new Traction.Rendering.AppendStrategy({renderWithin: @el})
+
+  buildDecorator: (model) ->
+    if _.isFunction(@decorator)
+      new @decorator(model)
+    else
+      klass = Traction.Decorator.extend(@decorator)
+      new klass(model)
 
   proxyEvent: (target, event, newEvent) ->
     callback = =>

@@ -46,6 +46,41 @@ describe "view", ->
       it "assigns the Append rendering strategy", ->
         expect(@view.renderer).toBe @appendStrategy
 
+  describe "decorator registration", ->
+    model             = {}
+    decoratorInstance = {}
+    decoratorClass     = jasmine.createSpy().andReturn(decoratorInstance)
+
+    describe "a decorator class is specified", ->
+      class View extends Traction.View
+        decorator: decoratorClass
+
+      beforeEach ->
+        @view = new View(model: model)
+
+      it "decorates the model with the specified class", ->
+        expect(decoratorClass).toHaveBeenCalledWith(model)
+
+      it "assigns the decorator as the model", ->
+        expect(@view.model).toBe decoratorInstance
+
+    describe "decorator attributes are specified", ->
+      decoratorAttributes = {}
+      Traction.Decorator ||= {extend: ->}
+
+      class View extends Traction.View
+        decorator: decoratorAttributes
+
+      beforeEach ->
+        spyOn(Traction.Decorator, "extend").andReturn(decoratorClass)
+        @view = new View(model: model)
+
+      it "constructs a decorator", ->
+        expect(Traction.Decorator.extend).toHaveBeenCalledWith(decoratorAttributes)
+
+      it "assigns the decorator as the model", ->
+        expect(@view.model).toBe decoratorInstance
+
   describe "#proxyEvent", ->
     beforeEach ->
       @parent = new Traction.View()

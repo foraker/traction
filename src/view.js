@@ -11,6 +11,9 @@
       this.children = new Traction.ViewCollection();
       View.__super__.constructor.apply(this, arguments);
       this.renderer = this.buildRenderer();
+      if (this.decorator) {
+        this.model = this.buildDecorator(options.model);
+      }
     }
 
     View.prototype.buildRenderer = function() {
@@ -27,6 +30,16 @@
         return new Traction.Rendering.AppendStrategy({
           renderWithin: this.el
         });
+      }
+    };
+
+    View.prototype.buildDecorator = function(model) {
+      var klass;
+      if (_.isFunction(this.decorator)) {
+        return new this.decorator(model);
+      } else {
+        klass = Traction.Decorator.extend(this.decorator);
+        return new klass(model);
       }
     };
 
