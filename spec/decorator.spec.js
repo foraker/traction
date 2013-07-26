@@ -52,9 +52,6 @@
       decorated = new TestObject("test_state");
       return this.decorator = new TestDecorator(decorated);
     });
-    jasmine.itShouldBehaveLike("a binding", {
-      describedClass: Traction.Bindings.AttributeBinding
-    });
     it("proxies methods back to the decorated instance", function() {
       return expect(this.decorator.method()).toBe("Data");
     });

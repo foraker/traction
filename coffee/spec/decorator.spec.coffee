@@ -17,10 +17,6 @@ describe "Traction.Decorator", ->
     decorated = new TestObject("test_state")
     @decorator = new TestDecorator(decorated)
 
-  jasmine.itShouldBehaveLike("a binding", {
-    describedClass: Traction.Bindings.AttributeBinding
-  })
-
   it "proxies methods back to the decorated instance", ->
     expect(@decorator.method()).toBe "Data"
 
