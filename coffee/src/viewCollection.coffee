@@ -1,4 +1,6 @@
 class Traction.ViewCollection
+  _.extend(@prototype, Backbone.Events)
+
   constructor: ->
     @collection = {}
 
@@ -6,7 +8,19 @@ class Traction.ViewCollection
     if member
       @collection[nameOrMember] = member
     else
-      @collection[_.uniqueId()] = nameOrMember
+      member = nameOrMember
+      @collection[_.uniqueId()] = member
+
+    if member.on and member.off
+      @listenTo member, "all", =>
+        args = Array.prototype.slice.call(arguments)
+        args = [args[0], member].concat(args[1..-1])
+        @trigger.apply(@, args)
+
+  broadcastOn: (event, callback) ->
+    @listenTo @, event, (triggerer) =>
+      @each (child) ->
+        callback(child) unless child is triggerer
 
   destroy: ->
     @each (child) -> child.remove()

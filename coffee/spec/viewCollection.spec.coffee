@@ -13,6 +13,32 @@ describe "view collection", ->
       @collection.add(@view)
       expect(@collection.get("ABC123")).toBe @view
 
+  describe "event proxying", ->
+    it "proxies child events and arguments", ->
+      callback = jasmine.createSpy("callback")
+      eventable_child = new Backbone.View()
+      @collection.add(eventable_child)
+      @collection.on("event", callback)
+      eventable_child.trigger("event", "arg 1", "arg 2")
+      expect(callback).toHaveBeenCalledWith(eventable_child, "arg 1", "arg 2")
+
+  describe "#broadcastOn", ->
+    child1 = new Backbone.View()
+    child2 = new Backbone.View()
+
+    beforeEach ->
+      @callback = jasmine.createSpy("callback")
+      @collection.add(child1)
+      @collection.add(child2)
+      @collection.broadcastOn("event", @callback)
+      child1.trigger("event")
+
+    it "call a callback with each child", ->
+      expect(@callback).toHaveBeenCalledWith(child2)
+
+    it "does not call the call with the child which triggered the event", ->
+      expect(@callback).not.toHaveBeenCalledWith(child1)
+
   describe "#destroy", ->
     remove = jasmine.createSpy()
     child  = {remove: remove}
