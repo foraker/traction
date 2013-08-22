@@ -1,12 +1,15 @@
 class Traction.Rendering.TemplateStrategy extends Traction.Rendering.NodeStrategy
+  defaultTemplateFinder: (name) ->
+    path = "#{Traction.config.templatePath}/#{name}"
+    JST[path] || throw("Missing template: #{path}")
+
   constructor: (options) ->
     @setElement(options.renderWithin)
     @template = @findTemplate(options.template)
     super
 
   findTemplate: (name) ->
-    path = "#{Traction.config.templatePath}/#{name}"
-    JST[path] || throw("Missing template: #{path}")
+    (Traction.config.findTemplate || @defaultTemplateFinder)(name) || throw("Missing template: #{path}")
 
   call: (options = {}) ->
     @el.innerHTML = @_template(context: options.bindTo)
