@@ -3,16 +3,39 @@
 
   Traction.ViewCollection = (function() {
 
+    _.extend(ViewCollection.prototype, Backbone.Events);
+
     function ViewCollection() {
       this.collection = {};
     }
 
     ViewCollection.prototype.add = function(nameOrMember, member) {
+      var _this = this;
       if (member) {
-        return this.collection[nameOrMember] = member;
+        this.collection[nameOrMember] = member;
       } else {
-        return this.collection[_.uniqueId()] = nameOrMember;
+        member = nameOrMember;
+        this.collection[_.uniqueId()] = member;
       }
+      if (member.on && member.off) {
+        return this.listenTo(member, "all", function() {
+          var args;
+          args = Array.prototype.slice.call(arguments);
+          args = [args[0], member].concat(args.slice(1));
+          return _this.trigger.apply(_this, args);
+        });
+      }
+    };
+
+    ViewCollection.prototype.broadcastOn = function(event, callback) {
+      var _this = this;
+      return this.listenTo(this, event, function(triggerer) {
+        return _this.each(function(child) {
+          if (child !== triggerer) {
+            return callback(child);
+          }
+        });
+      });
     };
 
     ViewCollection.prototype.destroy = function() {

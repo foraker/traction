@@ -17,6 +17,35 @@
         return expect(this.collection.get("ABC123")).toBe(this.view);
       });
     });
+    describe("event proxying", function() {
+      return it("proxies child events and arguments", function() {
+        var callback, eventable_child;
+        callback = jasmine.createSpy("callback");
+        eventable_child = new Backbone.View();
+        this.collection.add(eventable_child);
+        this.collection.on("event", callback);
+        eventable_child.trigger("event", "arg 1", "arg 2");
+        return expect(callback).toHaveBeenCalledWith(eventable_child, "arg 1", "arg 2");
+      });
+    });
+    describe("#broadcastOn", function() {
+      var child1, child2;
+      child1 = new Backbone.View();
+      child2 = new Backbone.View();
+      beforeEach(function() {
+        this.callback = jasmine.createSpy("callback");
+        this.collection.add(child1);
+        this.collection.add(child2);
+        this.collection.broadcastOn("event", this.callback);
+        return child1.trigger("event");
+      });
+      it("call a callback with each child", function() {
+        return expect(this.callback).toHaveBeenCalledWith(child2);
+      });
+      return it("does not call the call with the child which triggered the event", function() {
+        return expect(this.callback).not.toHaveBeenCalledWith(child1);
+      });
+    });
     describe("#destroy", function() {
       var child, remove;
       remove = jasmine.createSpy();

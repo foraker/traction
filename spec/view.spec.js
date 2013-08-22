@@ -133,6 +133,47 @@
         });
       });
     });
+    describe("callbacks", function() {
+      var ViewWithCallbacks;
+      ViewWithCallbacks = (function(_super) {
+
+        __extends(ViewWithCallbacks, _super);
+
+        function ViewWithCallbacks() {
+          return ViewWithCallbacks.__super__.constructor.apply(this, arguments);
+        }
+
+        ViewWithCallbacks.prototype.callbacks = {
+          "invoked": "callback",
+          "after:initialize": "initializeCallback"
+        };
+
+        ViewWithCallbacks.prototype.invoke = function() {
+          return this.invokeCallbacks("invoked");
+        };
+
+        ViewWithCallbacks.prototype.callback = function() {};
+
+        ViewWithCallbacks.prototype.initializeCallback = function() {
+          return this.initializeCallbackCalled = true;
+        };
+
+        return ViewWithCallbacks;
+
+      })(Traction.View);
+      it("invokes callbacks", function() {
+        var view;
+        view = new ViewWithCallbacks();
+        spyOn(view, "callback");
+        view.invoke();
+        return expect(view.callback).toHaveBeenCalled();
+      });
+      return it("invokes an after:initialize callback", function() {
+        var view;
+        view = new ViewWithCallbacks();
+        return expect(view.initializeCallbackCalled).toBe(true);
+      });
+    });
     describe("#proxyEvent", function() {
       beforeEach(function() {
         this.parent = new Traction.View();
@@ -175,6 +216,11 @@
             bindTo: this.view.binding,
             children: this.children
           });
+        });
+        it("invokes the after:render callback", function() {
+          spyOn(this.view, "invokeCallbacks");
+          this.view.render();
+          return expect(this.view.invokeCallbacks).toHaveBeenCalledWith("after:render");
         });
         return it("returns itself", function() {
           return expect(this.view.render()).toBe(this.view);

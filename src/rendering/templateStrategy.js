@@ -7,6 +7,14 @@
 
     __extends(TemplateStrategy, _super);
 
+    TemplateStrategy.prototype.defaultTemplateFinder = function(name) {
+      var path;
+      path = "" + Traction.config.templatePath + "/" + name;
+      return JST[path] || (function() {
+        throw "Missing template: " + path;
+      })();
+    };
+
     function TemplateStrategy(options) {
       this.setElement(options.renderWithin);
       this.template = this.findTemplate(options.template);
@@ -14,9 +22,7 @@
     }
 
     TemplateStrategy.prototype.findTemplate = function(name) {
-      var path;
-      path = "" + Traction.config.templatePath + "/" + name;
-      return JST[path] || (function() {
+      return (Traction.config.findTemplate || this.defaultTemplateFinder)(name) || (function() {
         throw "Missing template: " + path;
       })();
     };

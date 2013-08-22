@@ -9,11 +9,13 @@
 
     function View(options) {
       this.children = new Traction.ViewCollection();
+      this._initializeCallbacks();
+      if (this.decorator) {
+        options.model = this.buildDecorator(options.model);
+      }
       View.__super__.constructor.apply(this, arguments);
       this.renderer = this.buildRenderer();
-      if (this.decorator) {
-        this.model = this.buildDecorator(options.model);
-      }
+      this.invokeCallbacks("after:initialize");
     }
 
     View.prototype.buildRenderer = function() {
@@ -33,13 +35,13 @@
       }
     };
 
-    View.prototype.buildDecorator = function(model) {
+    View.prototype.buildDecorator = function(decorated) {
       var klass;
       if (_.isFunction(this.decorator)) {
-        return new this.decorator(model);
+        return new this.decorator(decorated);
       } else {
         klass = Traction.Decorator.extend(this.decorator);
-        return new klass(model);
+        return new klass(decorated);
       }
     };
 
@@ -61,6 +63,7 @@
         bindTo: this.model,
         children: this.children
       });
+      this.invokeCallbacks("after:render");
       return this;
     };
 
@@ -73,6 +76,32 @@
       return this.children.each(function(child) {
         return child.remove();
       });
+    };
+
+    View.prototype.invokeCallbacks = function(event) {
+      var callback, _i, _len, _ref, _results;
+      _ref = this._callbacks[event];
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        callback = _ref[_i];
+        _results.push(this[callback]());
+      }
+      return _results;
+    };
+
+    View.prototype._initializeCallbacks = function() {
+      var callbacks, event, _ref, _results;
+      this._callbacks = {
+        "after:initialize": [],
+        "after:render": []
+      };
+      _ref = this.callbacks || {};
+      _results = [];
+      for (event in _ref) {
+        callbacks = _ref[event];
+        _results.push(this._callbacks[event] = callbacks.split(" "));
+      }
+      return _results;
     };
 
     return View;
