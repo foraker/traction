@@ -81,6 +81,30 @@ describe "view", ->
       it "assigns the decorator as the model", ->
         expect(@view.model).toBe decoratorInstance
 
+  describe "callbacks", ->
+    class ViewWithCallbacks extends Traction.View
+      callbacks:
+        "invoked": "callback"
+        "after:initialize": "initializeCallback"
+
+      invoke: ->
+        @invokeCallbacks("invoked")
+
+      callback: ->
+
+      initializeCallback: ->
+        @initializeCallbackCalled = true
+
+    it "invokes callbacks", ->
+      view = new ViewWithCallbacks()
+      spyOn(view, "callback")
+      view.invoke()
+      expect(view.callback).toHaveBeenCalled()
+
+    it "invokes an after:initialize callback", ->
+      view = new ViewWithCallbacks()
+      expect(view.initializeCallbackCalled).toBe true
+
   describe "#proxyEvent", ->
     beforeEach ->
       @parent = new Traction.View()
@@ -117,6 +141,11 @@ describe "view", ->
           bindTo: @view.binding
           children: @children
         )
+
+      it "invokes the after:render callback", ->
+        spyOn(@view, "invokeCallbacks")
+        @view.render()
+        expect(@view.invokeCallbacks).toHaveBeenCalledWith("after:render")
 
       it "returns itself", ->
         expect(@view.render()).toBe @view

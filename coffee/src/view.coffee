@@ -1,9 +1,11 @@
 class Traction.View extends Backbone.View
   constructor: (options) ->
     @children = new Traction.ViewCollection()
+    @_initializeCallbacks()
+    options.model = @buildDecorator(options.model) if @decorator
     super
     @renderer = @buildRenderer()
-    @model    = @buildDecorator(options.model) if @decorator
+    @invokeCallbacks("after:initialize")
 
   buildRenderer: ->
     if @template
@@ -13,12 +15,12 @@ class Traction.View extends Backbone.View
     else
       new Traction.Rendering.AppendStrategy({renderWithin: @el})
 
-  buildDecorator: (model) ->
+  buildDecorator: (decorated) ->
     if _.isFunction(@decorator)
-      new @decorator(model)
+      new @decorator(decorated)
     else
       klass = Traction.Decorator.extend(@decorator)
-      new klass(model)
+      new klass(decorated)
 
   proxyEvent: (target, event, newEvent) ->
     callback = =>
@@ -31,12 +33,28 @@ class Traction.View extends Backbone.View
   render: ->
     @children.render()
     @renderer.call(bindTo: @model, children: @children)
+    @invokeCallbacks("after:render")
     @
 
   remove: ->
     super
     @renderer.destroy?()
     @children.each (child) -> child.remove()
+
+  invokeCallbacks: (event) ->
+    for callback in @_callbacks[event]
+      @[callback]()
+
+  # Private
+
+  _initializeCallbacks: ->
+    @_callbacks = {
+      "after:initialize": []
+      "after:render":     []
+    }
+
+    for event, callbacks of (@callbacks || {})
+      @_callbacks[event] = callbacks.split(" ")
 
 Traction.View.mixin = (object) ->
   _.extend(@prototype, object)
