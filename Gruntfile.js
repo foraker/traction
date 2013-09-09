@@ -2,6 +2,7 @@ module.exports = function(grunt) {
   var SRC = [
     'src/core.js',
     'src/computedAttribute.js',
+    'src/ie.js',
     'src/model.js',
     'src/decorator.js',
     'src/view.js',

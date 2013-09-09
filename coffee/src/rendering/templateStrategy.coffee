@@ -12,13 +12,19 @@ class Traction.Rendering.TemplateStrategy extends Traction.Rendering.NodeStrateg
     (Traction.config.findTemplate || @defaultTemplateFinder)(name) || throw("Missing template: #{name}")
 
   call: (options = {}) ->
-    @el.innerHTML = @_template(context: options.bindTo)
-    @_applyBindings(options.bindTo)
-    @_outlet(options.children)
+    @insert @_template(context: options.bindTo)
+    super(options)
 
   buildOutlet: (outletName)->
     outletName ||= ""
     "<script data-outlet='#{outletName}'></script>"
+
+  insert: (content) ->
+    if Traction.config.supportIE and Traction.IE.supportsInnerHTMLForTag(@el.tagName)
+      # Does not supported nested children
+      @$el.html(content)
+    else
+      @el.innerHTML = content
 
   # Private
 
