@@ -41,3 +41,6 @@ class Traction.ViewCollection
 
   els: ->
     @map (member) -> member.el
+
+  views: ->
+    _.values(@collection)
