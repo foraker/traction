@@ -43,18 +43,19 @@ describe "template rendering strategy", ->
 
     describe "bindings", ->
       beforeEach ->
+        @model   = {}
         @binding = {bindTo: -> @}
         spyOn(Traction.Bindings, "Factory").andReturn(@binding)
 
       it "creates bindings for data-bind attributes", ->
         @renderer.template = -> "<p data-bind='attribute'></p>"
-        @renderer.call()
+        @renderer.call(bindTo: @model)
 
         expect(Traction.Bindings.Factory).toHaveBeenCalledWith(@renderer.$("p")[0], "attribute")
 
       it "registers the binding", ->
         @renderer.template = -> "<p data-bind='attribute'></p>"
-        @renderer.call()
+        @renderer.call(bindTo: @model)
 
         expect(@renderer.bindings).toEqual [@binding]
 
@@ -63,7 +64,7 @@ describe "template rendering strategy", ->
           <p id='first' data-bind='attribute-one'></p>
           <p id='second' data-bind='attribute-two'></p>
         """
-        @renderer.call()
+        @renderer.call(bindTo: @model)
 
         expect(Traction.Bindings.Factory).toHaveBeenCalledWith(@renderer.$("p#first")[0], "attribute-one")
         expect(Traction.Bindings.Factory).toHaveBeenCalledWith(@renderer.$("p#second")[0], "attribute-two")
@@ -72,7 +73,7 @@ describe "template rendering strategy", ->
         @renderer.template = -> """
           <p data-bind='attribute-one attribute-two'></p>
         """
-        @renderer.call()
+        @renderer.call(bindTo: @model)
 
         expect(Traction.Bindings.Factory).toHaveBeenCalledWith(@renderer.$("p")[0], "attribute-one")
         expect(Traction.Bindings.Factory).toHaveBeenCalledWith(@renderer.$("p")[0], "attribute-two")
@@ -80,9 +81,8 @@ describe "template rendering strategy", ->
       it "binds the factoried binding to the bindTo option", ->
         spyOn(@binding, "bindTo")
         @renderer.template = -> "<p data-bind='attribute'></p>"
-        model = {}
-        @renderer.call(bindTo: model)
-        expect(@binding.bindTo).toHaveBeenCalledWith(model)
+        @renderer.call(bindTo: @model)
+        expect(@binding.bindTo).toHaveBeenCalledWith(@model)
 
     describe "outletting", ->
       it "outlets all children els", ->

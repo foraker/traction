@@ -10,6 +10,10 @@ class Traction.Rendering.NodeStrategy extends Backbone.View
   destroy: ->
     _.each @bindings, (binding) -> binding.destroy()
 
+  call: (options = {}) ->
+    @_applyBindings(options.bindTo) if options.bindTo
+    @_outlet(options.children) if options.children
+
   # Private
 
   _outlet: (children) ->
