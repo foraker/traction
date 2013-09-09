@@ -79,6 +79,10 @@
       });
     };
 
+    ViewCollection.prototype.views = function() {
+      return _.values(this.collection);
+    };
+
     return ViewCollection;
 
   })();

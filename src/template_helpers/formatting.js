@@ -12,7 +12,11 @@
       return string + append;
     },
     nonBreaking: function(string) {
-      return string || "&nbsp;";
+      if (string) {
+        return string.replace(/\s/g, "&nbsp;");
+      } else {
+        return "&nbsp;";
+      }
     }
   };
 

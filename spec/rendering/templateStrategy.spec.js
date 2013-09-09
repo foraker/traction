@@ -64,6 +64,7 @@
       });
       describe("bindings", function() {
         beforeEach(function() {
+          this.model = {};
           this.binding = {
             bindTo: function() {
               return this;
@@ -75,21 +76,27 @@
           this.renderer.template = function() {
             return "<p data-bind='attribute'></p>";
           };
-          this.renderer.call();
+          this.renderer.call({
+            bindTo: this.model
+          });
           return expect(Traction.Bindings.Factory).toHaveBeenCalledWith(this.renderer.$("p")[0], "attribute");
         });
         it("registers the binding", function() {
           this.renderer.template = function() {
             return "<p data-bind='attribute'></p>";
           };
-          this.renderer.call();
+          this.renderer.call({
+            bindTo: this.model
+          });
           return expect(this.renderer.bindings).toEqual([this.binding]);
         });
         it("creates multiple bindings for multiple tag", function() {
           this.renderer.template = function() {
             return "<p id='first' data-bind='attribute-one'></p>\n<p id='second' data-bind='attribute-two'></p>";
           };
-          this.renderer.call();
+          this.renderer.call({
+            bindTo: this.model
+          });
           expect(Traction.Bindings.Factory).toHaveBeenCalledWith(this.renderer.$("p#first")[0], "attribute-one");
           return expect(Traction.Bindings.Factory).toHaveBeenCalledWith(this.renderer.$("p#second")[0], "attribute-two");
         });
@@ -97,21 +104,21 @@
           this.renderer.template = function() {
             return "<p data-bind='attribute-one attribute-two'></p>";
           };
-          this.renderer.call();
+          this.renderer.call({
+            bindTo: this.model
+          });
           expect(Traction.Bindings.Factory).toHaveBeenCalledWith(this.renderer.$("p")[0], "attribute-one");
           return expect(Traction.Bindings.Factory).toHaveBeenCalledWith(this.renderer.$("p")[0], "attribute-two");
         });
         return it("binds the factoried binding to the bindTo option", function() {
-          var model;
           spyOn(this.binding, "bindTo");
           this.renderer.template = function() {
             return "<p data-bind='attribute'></p>";
           };
-          model = {};
           this.renderer.call({
-            bindTo: model
+            bindTo: this.model
           });
-          return expect(this.binding.bindTo).toHaveBeenCalledWith(model);
+          return expect(this.binding.bindTo).toHaveBeenCalledWith(this.model);
         });
       });
       return describe("outletting", function() {

@@ -23,6 +23,18 @@
       });
     };
 
+    NodeStrategy.prototype.call = function(options) {
+      if (options == null) {
+        options = {};
+      }
+      if (options.bindTo) {
+        this._applyBindings(options.bindTo);
+      }
+      if (options.children) {
+        return this._outlet(options.children);
+      }
+    };
+
     NodeStrategy.prototype._outlet = function(children) {
       var _this = this;
       return this.$("script[data-outlet]").each(function(index, el) {

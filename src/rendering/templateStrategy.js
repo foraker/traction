@@ -10,9 +10,7 @@
     TemplateStrategy.prototype.defaultTemplateFinder = function(name) {
       var path;
       path = "" + Traction.config.templatePath + "/" + name;
-      return JST[path] || (function() {
-        throw "Missing template: " + path;
-      })();
+      return JST[path];
     };
 
     function TemplateStrategy(options) {
@@ -23,7 +21,7 @@
 
     TemplateStrategy.prototype.findTemplate = function(name) {
       return (Traction.config.findTemplate || this.defaultTemplateFinder)(name) || (function() {
-        throw "Missing template: " + path;
+        throw "Missing template: " + name;
       })();
     };
 
@@ -31,16 +29,23 @@
       if (options == null) {
         options = {};
       }
-      this.el.innerHTML = this._template({
+      this.insert(this._template({
         context: options.bindTo
-      });
-      this._applyBindings(options.bindTo);
-      return this._outlet(options.children);
+      }));
+      return TemplateStrategy.__super__.call.call(this, options);
     };
 
     TemplateStrategy.prototype.buildOutlet = function(outletName) {
       outletName || (outletName = "");
       return "<script data-outlet='" + outletName + "'></script>";
+    };
+
+    TemplateStrategy.prototype.insert = function(content) {
+      if (Traction.config.supportIE && Traction.IE.supportsInnerHTMLForTag(this.el.tagName)) {
+        return this.$el.html(content);
+      } else {
+        return this.el.innerHTML = content;
+      }
     };
 
     TemplateStrategy.prototype._template = function(options) {

@@ -12,14 +12,6 @@
       PrerenderedStrategy.__super__.constructor.apply(this, arguments);
     }
 
-    PrerenderedStrategy.prototype.call = function(options) {
-      if (options == null) {
-        options = {};
-      }
-      this._applyBindings(options.bindTo);
-      return this._outlet(options.children);
-    };
-
     return PrerenderedStrategy;
 
   })(Traction.Rendering.NodeStrategy);
