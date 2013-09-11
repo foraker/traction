@@ -1,11 +1,5 @@
 # Traction
-Extend your Backbone.
-
-## Goals
-
-Backbone.js is not a framework. It provides useful primitives and leaves the composition and architecture decisions to you.
-
-Likewise, Traction.js has no framework ambitions.  Instead, it tries to enhance existing primitives and provide a few of its own.
+Foraker Labs Backbone components.
 
 ## Features
 
@@ -114,10 +108,10 @@ model.destroy() // alerts "user destroyed"
 ```
 
 #### Forms
-`Traction.Forms.Form` allows you to quickly compose forms which automatically sync data back to the model and render inline errors.
+`Traction.Forms.FormView` allows you to quickly compose forms which automatically sync data back to the model and render inline errors.
 
 ```Javascript
-var ContactForm = Traction.Forms.Form.extend({
+var ContactForm = Traction.Forms.FormView.extend({
   initialize: function() {
     this.addInput({attribute: "email"})
     this.addInput({
