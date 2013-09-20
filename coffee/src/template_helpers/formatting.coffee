@@ -10,4 +10,12 @@ Traction.TemplateHelpers.Formatting = {
 
   nonBreaking: (string) ->
     if string then string.replace(/\s/g, "&nbsp;") else "&nbsp;"
+
+  datetime: (datetime, format = "L h:mm a") ->
+    datetime = moment(datetime || null)
+    if datetime then datetime.format(format) else ""
+
+  currency: (decimal, symbol = "$") ->
+    return "" unless decimal
+    symbol + _.string.numberFormat(parseFloat(decimal), 2)
 }
