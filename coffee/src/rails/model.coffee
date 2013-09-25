@@ -70,14 +70,23 @@ class Traction.Rails.Model extends Backbone.Model
 
   _updateAssociation: (klass, name, newValue) ->
     isDirty = false
-
-    if newValue instanceof klass or !newValue
-      isDirty = newValue != @get(name)
-      @attributes[name] = newValue
-    else
+    dirtyCheck = (cb) =>
       callback = -> isDirty = true
       @get(name).on("change add remove", callback)
-      @get(name).set(newValue)
+      cb()
       @get(name).off("change add remove", callback)
 
+    if newValue instanceof klass or !newValue
+      if @_isCollection(@get(name)) and @_isCollection(newValue)
+        dirtyCheck => @attributes[name].set(newValue.models)
+      else
+        isDirty = newValue != @get(name)
+        @attributes[name] = newValue
+    else
+      dirtyCheck => @get(name).set(newValue)
+
     return isDirty
+
+  _isCollection: (collection) ->
+    collection?.models
+

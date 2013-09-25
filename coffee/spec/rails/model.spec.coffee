@@ -102,6 +102,62 @@ describe "Rails model", ->
         @user.set({profile: null})
         expect(callback).not.toHaveBeenCalled()
 
+      describe "updating a nested association", ->
+        class Fees extends Traction.Rails.Collection
+
+        class Leg extends Traction.Rails.Model
+          associations: {
+            fees: Fees
+          }
+        class Legs extends Traction.Rails.Collection
+          model: Leg
+
+        class Move extends Traction.Rails.Model
+          associations: {
+            legs: Legs
+          }
+
+        beforeEach ->
+          fee = {id: 1}
+          leg = {id: 1, fees: [fee]}
+          @move = new Move(legs: [leg])
+
+        it "retains nested references", ->
+          fees = @move.get("legs").first().get("fees")
+          fee  = {id: 1}
+          leg  = {id: 1, fees: [fee]}
+          @move.set(legs: [leg])
+
+          expect(@move.get("legs").first().get("fees")).toBe fees
+
+        it "does not fire change events when the nested models are the same", ->
+          callback = jasmine.createSpy()
+          leg = @move.get("legs").first()
+          leg.on("change:fees", callback)
+          fee  = {id: 1}
+          leg  = {id: 1, fees: [fee]}
+          @move.set(legs: [leg])
+
+          expect(callback).not.toHaveBeenCalled()
+
+        it "retains references when values change", ->
+          fees = @move.get("legs").first().get("fees")
+          fee  = {id: 2}
+          leg  = {id: 1, fees: [fee]}
+          @move.set(legs: [leg])
+
+          expect(@move.get("legs").first().get("fees")).toBe fees
+
+        it "fires change events when the nested models are the same", ->
+          callback = jasmine.createSpy()
+          leg = @move.get("legs").first()
+          leg.on("change:fees", callback)
+          fee  = {id: 2}
+          leg  = {id: 1, fees: [fee]}
+          @move.set(legs: [leg])
+
+          expect(callback).toHaveBeenCalled()
+
     it "handles attr, val style setting", ->
       @user.set("name", "Timothy")
       expect(@user.get("name")).toBe "Timothy"
