@@ -9,7 +9,13 @@ class Traction.Forms.Field extends Backbone.View
 
   initialize: ->
     @options = _.extend(@_defaults(), @options)
-    @listenTo(@model, "change:#{@options.attribute}", @reset)
+    @_bind() if @model
+
+  setModel: (model) ->
+    @_unbind()
+    @model = model
+    @_bind()
+    @
 
   render: ->
     @_empty()
@@ -57,6 +63,12 @@ class Traction.Forms.Field extends Backbone.View
     @commit() if @options.autoCommit
 
   # Private
+
+  _bind: ->
+    @listenTo(@model, "change:#{@options.attribute}", @reset)
+
+  _unbind: ->
+    @stopListening(@model)
 
   _input: ->
     @input ||= @$("input")
