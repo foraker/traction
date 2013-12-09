@@ -36,6 +36,10 @@ class Traction.View extends Backbone.View
     @invokeCallbacks("after:render")
     @
 
+  delegateEvents: ->
+    super
+    @children.each (child) -> child.delegateEvents()
+
   remove: ->
     super
     @renderer.destroy?()
