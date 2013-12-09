@@ -23,6 +23,7 @@ class Traction.Forms.Field extends Backbone.View
     @_renderInput()
     @_designateAsRequired() if @options.required
     @reset()
+    @disable() if @disabled
     @
 
   renderErrors: (messages) ->
@@ -30,9 +31,14 @@ class Traction.Forms.Field extends Backbone.View
       .append("<span class=\"inline-errors\">#{messages.join(", ")}</span>")
 
   disable: ->
+    @disabled = true
     @_input().attr("disabled", "disabled")
 
+  isDisabled: ->
+    @_input().is(":disabled")
+
   enable: ->
+    @disabled = false
     @_input().removeAttr("disabled")
 
   get: ->
