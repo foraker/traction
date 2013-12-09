@@ -1,4 +1,4 @@
-class Traction.Rails.Model extends Backbone.Model
+class Traction.Rails.Model extends Traction.Model
   associations: {}
 
   initialize: ->
