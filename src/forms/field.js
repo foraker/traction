@@ -17,7 +17,16 @@
 
     Field.prototype.initialize = function() {
       this.options = _.extend(this._defaults(), this.options);
-      return this.listenTo(this.model, "change:" + this.options.attribute, this.reset);
+      if (this.model) {
+        return this._bind();
+      }
+    };
+
+    Field.prototype.setModel = function(model) {
+      this._unbind();
+      this.model = model;
+      this._bind();
+      return this;
     };
 
     Field.prototype.render = function() {
@@ -28,6 +37,9 @@
         this._designateAsRequired();
       }
       this.reset();
+      if (this.disabled) {
+        this.disable();
+      }
       return this;
     };
 
@@ -36,10 +48,16 @@
     };
 
     Field.prototype.disable = function() {
+      this.disabled = true;
       return this._input().attr("disabled", "disabled");
     };
 
+    Field.prototype.isDisabled = function() {
+      return this._input().is(":disabled");
+    };
+
     Field.prototype.enable = function() {
+      this.disabled = false;
       return this._input().removeAttr("disabled");
     };
 
@@ -78,6 +96,14 @@
       if (this.options.autoCommit) {
         return this.commit();
       }
+    };
+
+    Field.prototype._bind = function() {
+      return this.listenTo(this.model, "change:" + this.options.attribute, this.reset);
+    };
+
+    Field.prototype._unbind = function() {
+      return this.stopListening(this.model);
     };
 
     Field.prototype._input = function() {

@@ -146,6 +146,6 @@
 
     return Model;
 
-  })(Backbone.Model);
+  })(Traction.Model);
 
 }).call(this);

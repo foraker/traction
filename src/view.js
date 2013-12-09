@@ -67,6 +67,13 @@
       return this;
     };
 
+    View.prototype.delegateEvents = function() {
+      View.__super__.delegateEvents.apply(this, arguments);
+      return this.children.each(function(child) {
+        return child.delegateEvents();
+      });
+    };
+
     View.prototype.remove = function() {
       var _base;
       View.__super__.remove.apply(this, arguments);
