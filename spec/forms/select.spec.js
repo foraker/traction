@@ -49,12 +49,26 @@
         }).render();
         return expect(field.$("option:first").html()).toBe("Blank Label");
       });
-      return it("creates a blank option with the correct value", function() {
+      it("creates a blank option with the correct value", function() {
         var field;
         field = createInstance({
           includeBlank: "Blank Label"
         }).render();
         return expect(field.$("option:first").attr("value")).toEqual("");
+      });
+      it("is not a multiselect field", function() {
+        var field;
+        field = createInstance().render();
+        return expect(field.$("select")[0].hasAttribute("multiple")).toEqual(false);
+      });
+      return describe("the multiselect option is passed", function() {
+        return it("is a multiselect field", function() {
+          var field;
+          field = createInstance({
+            multiselect: true
+          }).render();
+          return expect(field.$("select")[0].hasAttribute("multiple")).toEqual(true);
+        });
       });
     });
     return describe("#clear", function() {

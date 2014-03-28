@@ -37,6 +37,15 @@ describe "Traction.Forms.Select", ->
       field = createInstance({includeBlank: "Blank Label"}).render()
       expect(field.$("option:first").attr("value")).toEqual("")
 
+    it "is not a multiselect field", ->
+      field = createInstance().render()
+      expect(field.$("select")[0].hasAttribute("multiple")).toEqual(false)
+
+    describe "the multiselect option is passed", ->
+      it "is a multiselect field", ->
+        field = createInstance(multiselect: true).render()
+        expect(field.$("select")[0].hasAttribute("multiple")).toEqual(true)
+
   describe "#clear", ->
     it "selects the first value", ->
       field = createInstance().render()
