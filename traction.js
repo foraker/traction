@@ -664,8 +664,7 @@
       _ref = formatter.split(":"), formatter = _ref[0], args = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
       if (formattingFunction = Traction.TemplateHelpers.Formatting[formatter]) {
         return function(content) {
-          args.unshift(content);
-          return formattingFunction.apply(this, args);
+          return formattingFunction.apply(this, [content].concat(args));
         };
       } else {
         throw "Can't find formatter: " + formatter;
@@ -1157,10 +1156,18 @@
       return Select.__super__.constructor.apply(this, arguments);
     }
 
-    Select.prototype.inputTemplate = _.template("<select id=\"<%= options.id %>\" name=\"<%= options.name %>\">\n  <% if(options.includeBlank) { %><option value=\"\"><%= options.includeBlank %></option><% } %>\n  <% _.each(options.options, function(value, label){ %>\n    <option value=\"<%= value %>\"><%= label %></option>\n  <% }) %>\n</select>");
+    Select.prototype.inputTemplate = _.template("<select id=\"<%= options.id %>\" name=\"<%= options.name %>\" <%= options.multiple %> >\n  <% if(options.includeBlank) { %><option value=\"\"><%= options.includeBlank %></option><% } %>\n  <% _.each(options.options, function(value, label){ %>\n    <option value=\"<%= value %>\"><%= label %></option>\n  <% }) %>\n</select>");
 
     Select.prototype.events = {
       "change select": "applyAutoCommit"
+    };
+
+    Select.prototype.initialize = function(options) {
+      if (options == null) {
+        options = {};
+      }
+      options.multiple = options.multiple ? "multiple" : "";
+      return Select.__super__.initialize.apply(this, arguments);
     };
 
     Select.prototype.clear = function() {
