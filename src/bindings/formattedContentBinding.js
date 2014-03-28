@@ -30,8 +30,7 @@
       _ref = formatter.split(":"), formatter = _ref[0], args = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
       if (formattingFunction = Traction.TemplateHelpers.Formatting[formatter]) {
         return function(content) {
-          args.unshift(content);
-          return formattingFunction.apply(this, args);
+          return formattingFunction.apply(this, [content].concat(args));
         };
       } else {
         throw "Can't find formatter: " + formatter;

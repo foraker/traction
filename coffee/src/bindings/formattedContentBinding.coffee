@@ -17,7 +17,6 @@ class Traction.Bindings.FormattedContentBinding extends Traction.Bindings.Bindin
 
     if formattingFunction = Traction.TemplateHelpers.Formatting[formatter]
       (content) ->
-        args.unshift(content)
-        formattingFunction.apply(@, args)
+        formattingFunction.apply(@, [content].concat(args))
     else
       throw("Can't find formatter: #{formatter}")
