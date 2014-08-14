@@ -151,11 +151,11 @@ Yields (roughly):
 ```HTML
 <form>
   Welcome! Please enter your email address:
-  <lable for="email_field">Email</lable>
+  <label for="email_field">Email</label>
   <input type="text" name="email_field" placeholder="Email"></input>
 
   And why not a message?
-  <label for="message_field">Email</lable>
+  <label for="message_field">Message</lable>
   <textarea name="message_field" placeholder="Add a message here"></textarea>
 
   <input type="sumbit"></input>
