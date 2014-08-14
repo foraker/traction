@@ -155,7 +155,7 @@ Yields (roughly):
   <input type="text" name="email_field" placeholder="Email"></input>
 
   And why not a message?
-  <label for="message_field">Message</lable>
+  <label for="message_field">Message</label>
   <textarea name="message_field" placeholder="Add a message here"></textarea>
 
   <input type="sumbit"></input>
