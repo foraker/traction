@@ -3,8 +3,9 @@ Foraker Labs Backbone components.
 
 ## Dependencies
 
-- Underscore
-- Backbone
+- [Underscore](http://underscorejs.org/)
+- [Backbone](http://backbonejs.org/)
+- [Underscore.string](https://github.com/epeli/underscore.string)
 
 ## Features
 
