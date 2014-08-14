@@ -1,6 +1,11 @@
 # Traction
 Foraker Labs Backbone components.
 
+## Dependencies
+
+- Underscore
+- Backbone
+
 ## Features
 
 [Bindings](#bindings)
