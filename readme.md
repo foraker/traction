@@ -134,10 +134,10 @@ Template:
 ```HTML
 <form>
   Welcome! Please enter your email address:
-  <%= @output("email") %>
+  <%= @outlet("email") %>
 
   And why not a message?
-  <%= @output("message") %>
+  <%= @outlet("message") %>
 
   <input type="sumbit"></input>
 </form>
