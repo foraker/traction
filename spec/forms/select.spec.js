@@ -64,7 +64,7 @@
         return it("is a multiselect field", function() {
           var field;
           field = createInstance({
-            multiselect: true
+            multiple: true
           }).render();
           return expect(field.$("select")[0].hasAttribute("multiple")).toEqual(true);
         });

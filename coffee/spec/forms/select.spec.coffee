@@ -43,7 +43,7 @@ describe "Traction.Forms.Select", ->
 
     describe "the multiselect option is passed", ->
       it "is a multiselect field", ->
-        field = createInstance(multiselect: true).render()
+        field = createInstance(multiple: true).render()
         expect(field.$("select")[0].hasAttribute("multiple")).toEqual(true)
 
   describe "#clear", ->
