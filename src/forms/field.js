@@ -14,8 +14,8 @@
 
     Field.prototype.className = "field";
 
-    Field.prototype.initialize = function() {
-      this.options = _.extend(this._defaults(), this.options);
+    Field.prototype.initialize = function(options) {
+      this.options = _.extend(this._defaults(), options);
       if (this.model) {
         return this._bind();
       }
@@ -30,13 +30,15 @@
 
     Field.prototype.render = function() {
       this._empty();
-      this._renderLabel();
+      if (this.options.label !== false) {
+        this._renderLabel();
+      }
       this._renderInput();
       if (this.options.required) {
         this._designateAsRequired();
       }
       this.reset();
-      if (this.disabled) {
+      if (this.options.disabled) {
         this.disable();
       }
       return this;
@@ -47,7 +49,7 @@
     };
 
     Field.prototype.disable = function() {
-      this.disabled = true;
+      this.options.disabled = true;
       return this._input().attr("disabled", "disabled");
     };
 
@@ -56,7 +58,7 @@
     };
 
     Field.prototype.enable = function() {
-      this.disabled = false;
+      this.options.disabled = false;
       return this._input().removeAttr("disabled");
     };
 

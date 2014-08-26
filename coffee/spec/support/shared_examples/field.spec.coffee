@@ -11,6 +11,11 @@ jasmine.sharedExamplesFor "a field", (options) ->
       label = field.$("label").html().replace(/\n/g, "").trim()
       expect(label).toBe("First name")
 
+    it "does not render a label when label: false", ->
+      field = options.createInstance(label: false).render()
+      label = field.$("label")
+      expect(label.length).toBe(0)
+
     it "renders an input with the correct name", ->
       field = options.createInstance()
       field.render()
@@ -30,6 +35,15 @@ jasmine.sharedExamplesFor "a field", (options) ->
         field = options.createInstance({required: true}).render()
         label = field.$("label").html().replace(/\n/g, "").trim()
         expect(label).toBe("<i>*</i> First name")
+
+    describe "a disabled input", ->
+      it "is not disabled by default", ->
+        field = options.createInstance().render()
+        expect(field.$(options.input).attr("disabled")).toBe(undefined)
+
+      it "disables the input", ->
+        field = options.createInstance({disabled: true}).render()
+        expect(field.$(options.input).attr("disabled")).toBe("disabled")
 
   describe "#renderErrors", ->
     it "adds a class of 'errors'", ->

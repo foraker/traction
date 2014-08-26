@@ -7,8 +7,8 @@ class Traction.Forms.Field extends Backbone.View
 
   className: "field"
 
-  initialize: ->
-    @options = _.extend(@_defaults(), @options)
+  initialize: (options) ->
+    @options = _.extend(@_defaults(), options)
     @_bind() if @model
 
   setModel: (model) ->
@@ -19,11 +19,11 @@ class Traction.Forms.Field extends Backbone.View
 
   render: ->
     @_empty()
-    @_renderLabel()
+    @_renderLabel() unless @options.label is false
     @_renderInput()
     @_designateAsRequired() if @options.required
     @reset()
-    @disable() if @disabled
+    @disable() if @options.disabled
     @
 
   renderErrors: (messages) ->
@@ -31,14 +31,14 @@ class Traction.Forms.Field extends Backbone.View
       .append("<span class=\"inline-errors\">#{messages.join(", ")}</span>")
 
   disable: ->
-    @disabled = true
+    @options.disabled = true
     @_input().attr("disabled", "disabled")
 
   isDisabled: ->
     @_input().is(":disabled")
 
   enable: ->
-    @disabled = false
+    @options.disabled = false
     @_input().removeAttr("disabled")
 
   get: ->

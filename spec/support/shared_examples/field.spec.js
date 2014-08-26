@@ -15,6 +15,14 @@
         label = field.$("label").html().replace(/\n/g, "").trim();
         return expect(label).toBe("First name");
       });
+      it("does not render a label when label: false", function() {
+        var field, label;
+        field = options.createInstance({
+          label: false
+        }).render();
+        label = field.$("label");
+        return expect(label.length).toBe(0);
+      });
       it("renders an input with the correct name", function() {
         var field;
         field = options.createInstance();
@@ -31,7 +39,7 @@
         }).render();
         return expect(field.$(options.input).val()).toBe("Jobin");
       });
-      return describe("a required input", function() {
+      describe("a required input", function() {
         it("designates the element as required", function() {
           var field;
           field = options.createInstance({
@@ -46,6 +54,20 @@
           }).render();
           label = field.$("label").html().replace(/\n/g, "").trim();
           return expect(label).toBe("<i>*</i> First name");
+        });
+      });
+      return describe("a disabled input", function() {
+        it("is not disabled by default", function() {
+          var field;
+          field = options.createInstance().render();
+          return expect(field.$(options.input).attr("disabled")).toBe(void 0);
+        });
+        return it("disables the input", function() {
+          var field;
+          field = options.createInstance({
+            disabled: true
+          }).render();
+          return expect(field.$(options.input).attr("disabled")).toBe("disabled");
         });
       });
     });
