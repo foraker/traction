@@ -258,3 +258,28 @@ After building the project, run the specs with `grunt test`.
 ### General Development
 
 The easiest way to develop is to call the default grunt task via `grunt`.  This will watch the coffee/ directory, recompile when changes are detected, and run the specs.
+
+Installing grunt (requires npm)
+
+```
+npm install grunt-cli -g
+npm install grunt-exec -g
+```
+
+Installing coffeescript
+
+```
+npm install coffee-script -g
+```
+
+Compiling assets during development
+
+```
+grunt
+```
+
+Building the project
+
+```
+grunt build
+```
