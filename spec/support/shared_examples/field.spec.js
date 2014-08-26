@@ -9,25 +9,34 @@
         field.render();
         return expect(field.el.innerHTML).not.toContain("existing content");
       });
-      it("renders a label", function() {
-        var field, label;
-        field = options.createInstance().render();
-        label = field.$("label").html().replace(/\n/g, "").trim();
-        return expect(label).toBe("First name");
-      });
-      it("does not render a label when label: false", function() {
-        var field, label;
-        field = options.createInstance({
-          label: false
-        }).render();
-        label = field.$("label");
-        return expect(label.length).toBe(0);
-      });
-      it("renders an input with the correct name", function() {
-        var field;
-        field = options.createInstance();
-        field.render();
-        return expect(field.$(options.input).attr("name")).toBe("first_name_input");
+      describe("label rendering", function() {
+        it("renders a label", function() {
+          var field, label;
+          field = options.createInstance().render();
+          label = field.$("label").html().replace(/\n/g, "").trim();
+          return expect(label).toBe("First name");
+        });
+        it("does not render a label when label: false", function() {
+          var field, label;
+          field = options.createInstance({
+            label: false
+          }).render();
+          label = field.$("label");
+          return expect(label.length).toBe(0);
+        });
+        it("does not create a placeholder when the label is false", function() {
+          var field;
+          field = options.createInstance({
+            label: false
+          }).render();
+          return expect(!!field.$("input").attr("placeholder")).toBe(false);
+        });
+        return it("renders an input with the correct name", function() {
+          var field;
+          field = options.createInstance();
+          field.render();
+          return expect(field.$(options.input).attr("name")).toBe("first_name_input");
+        });
       });
       it("initializes the input content", function() {
         var field, model;

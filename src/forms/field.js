@@ -15,7 +15,9 @@
     Field.prototype.className = "field";
 
     Field.prototype.initialize = function(options) {
-      this.options = _.extend(this._defaults(), options);
+      this.options = _.extend(this._defaults(), {
+        placeholder: options.label || ''
+      }, options);
       if (this.model) {
         return this._bind();
       }
@@ -132,10 +134,9 @@
       return this.$el.addClass("required");
     };
 
-    Field.prototype._defaults = function() {
+    Field.prototype._defaults = function(options) {
       return {
         id: this.cid,
-        placeholder: this.options.label,
         autoCommit: true,
         required: false
       };

@@ -8,7 +8,12 @@ class Traction.Forms.Field extends Backbone.View
   className: "field"
 
   initialize: (options) ->
-    @options = _.extend(@_defaults(), options)
+    @options = _.extend(
+      @_defaults()
+      placeholder: options.label || ''
+      options
+    )
+
     @_bind() if @model
 
   setModel: (model) ->
@@ -92,10 +97,9 @@ class Traction.Forms.Field extends Backbone.View
   _designateAsRequired: ->
     @$el.addClass("required")
 
-  _defaults: ->
+  _defaults: (options) ->
     {
       id:          @cid,
-      placeholder: @options.label,
       autoCommit:  true
       required:    false
     }

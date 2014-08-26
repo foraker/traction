@@ -6,20 +6,25 @@ jasmine.sharedExamplesFor "a field", (options) ->
       field.render()
       expect(field.el.innerHTML).not.toContain("existing content")
 
-    it "renders a label", ->
-      field = options.createInstance().render()
-      label = field.$("label").html().replace(/\n/g, "").trim()
-      expect(label).toBe("First name")
+    describe "label rendering", ->
+      it "renders a label", ->
+        field = options.createInstance().render()
+        label = field.$("label").html().replace(/\n/g, "").trim()
+        expect(label).toBe("First name")
 
-    it "does not render a label when label: false", ->
-      field = options.createInstance(label: false).render()
-      label = field.$("label")
-      expect(label.length).toBe(0)
+      it "does not render a label when label: false", ->
+        field = options.createInstance(label: false).render()
+        label = field.$("label")
+        expect(label.length).toBe(0)
 
-    it "renders an input with the correct name", ->
-      field = options.createInstance()
-      field.render()
-      expect(field.$(options.input).attr("name")).toBe("first_name_input")
+      it "does not create a placeholder when the label is false", ->
+        field = options.createInstance(label: false).render()
+        expect(!!field.$("input").attr("placeholder")).toBe(false)
+
+      it "renders an input with the correct name", ->
+        field = options.createInstance()
+        field.render()
+        expect(field.$(options.input).attr("name")).toBe("first_name_input")
 
     it "initializes the input content", ->
       model = new Backbone.Model({first_name: "Jobin"})
