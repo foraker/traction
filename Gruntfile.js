@@ -51,10 +51,10 @@ module.exports = function(grunt) {
           specs: 'spec/**/*spec.js',
           helpers: ['spec/support/specHelper.js','spec/support/**/*.js'],
           vendor: [
-            "vendor/jquery-2.0.1.js",
-            "vendor/underscore.js",
-            "vendor/backbone.js",
-            "vendor/underscore.string.js"
+            "bower_components/jquery/dist/jquery.js",
+            "bower_components/underscore/underscore.js",
+            "bower_components/backbone/backbone.js",
+            "bower_components/underscore.string/lib/underscore.string.js"
           ]
         }
       }
