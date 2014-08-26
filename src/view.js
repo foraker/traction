@@ -13,17 +13,17 @@
         options.model = this.buildDecorator(options.model);
       }
       View.__super__.constructor.apply(this, arguments);
-      this.renderer = this.buildRenderer();
+      this.renderer = this.buildRenderer(options || {});
       this.invokeCallbacks("after:initialize");
     }
 
-    View.prototype.buildRenderer = function() {
+    View.prototype.buildRenderer = function(options) {
       if (this.template) {
         return new Traction.Rendering.TemplateStrategy({
           template: this.template,
           renderWithin: this.el
         });
-      } else if (this.options.el) {
+      } else if (options.el) {
         return new Traction.Rendering.PrerenderedStrategy({
           renderWithin: this.el
         });

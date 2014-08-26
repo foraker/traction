@@ -4,13 +4,13 @@ class Traction.View extends Backbone.View
     @_initializeCallbacks()
     options.model = @buildDecorator(options.model) if @decorator
     super
-    @renderer = @buildRenderer()
+    @renderer = @buildRenderer(options || {})
     @invokeCallbacks("after:initialize")
 
-  buildRenderer: ->
+  buildRenderer: (options) ->
     if @template
       new Traction.Rendering.TemplateStrategy({template: @template, renderWithin: @el})
-    else if @options.el
+    else if options.el
       new Traction.Rendering.PrerenderedStrategy({renderWithin: @el})
     else
       new Traction.Rendering.AppendStrategy({renderWithin: @el})
@@ -65,4 +65,3 @@ Traction.View.mixin = (object) ->
 
 Traction.View.extends = (klass) ->
  @mixin(klass.prototype)
-

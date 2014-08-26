@@ -10,8 +10,8 @@
       return AppendStrategy.__super__.constructor.apply(this, arguments);
     }
 
-    AppendStrategy.prototype.initialize = function() {
-      return this.setElement(this.options.renderWithin);
+    AppendStrategy.prototype.initialize = function(options) {
+      return this.setElement(options.renderWithin);
     };
 
     AppendStrategy.prototype.call = function(options) {
