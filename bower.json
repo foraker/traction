@@ -1,7 +1,7 @@
 {
   "name": "traction",
   "main": "traction.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/foraker/traction",
   "authors": [
     "Ben Eddy <bae@foraker.com>",
@@ -19,8 +19,12 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "coffee",
+    "src",
+    "Gruntfile",
+    "files",
+    "*.md",
+    "*.min.js"
   ],
   "dependencies": {
     "backbone": "~1.1.2",
