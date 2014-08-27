@@ -8,14 +8,13 @@
     }
 
     ViewCollection.prototype.add = function(nameOrMember, member) {
-      if (member) {
-        this.collection[nameOrMember] = member;
-      } else {
+      if (!member) {
         member = nameOrMember;
-        this.collection[_.uniqueId()] = member;
+        nameOrMember = _.uniqueId();
       }
+      this.collection[nameOrMember] = member;
       if (member.on && member.off) {
-        return this.listenTo(member, "all", (function(_this) {
+        this.listenTo(member, "all", (function(_this) {
           return function() {
             var args;
             args = Array.prototype.slice.call(arguments);
@@ -23,7 +22,12 @@
             return _this.trigger.apply(_this, args);
           };
         })(this));
+        return this.listenTo(member, "remove", _.partial(this.remove, nameOrMember));
       }
+    };
+
+    ViewCollection.prototype.remove = function(name) {
+      return delete this.collection[name];
     };
 
     ViewCollection.prototype.broadcastOn = function(event, callback) {

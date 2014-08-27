@@ -194,15 +194,22 @@
       });
     };
 
-    View.prototype.remove = function() {
+    View.prototype.remove = function(options) {
       var _base;
+      if (options == null) {
+        options = {};
+      }
+      if (options.silent !== true) {
+        this.trigger("remove", this);
+      }
       View.__super__.remove.apply(this, arguments);
       if (typeof (_base = this.renderer).destroy === "function") {
         _base.destroy();
       }
-      return this.children.each(function(child) {
+      this.children.each(function(child) {
         return child.remove();
       });
+      return this.invokeCallbacks("after:remove");
     };
 
     View.prototype.invokeCallbacks = function(event) {
@@ -220,7 +227,8 @@
       var callbacks, event, _ref, _results;
       this._callbacks = {
         "after:initialize": [],
-        "after:render": []
+        "after:render": [],
+        "after:remove": []
       };
       _ref = this.callbacks || {};
       _results = [];
@@ -254,14 +262,13 @@
     }
 
     ViewCollection.prototype.add = function(nameOrMember, member) {
-      if (member) {
-        this.collection[nameOrMember] = member;
-      } else {
+      if (!member) {
         member = nameOrMember;
-        this.collection[_.uniqueId()] = member;
+        nameOrMember = _.uniqueId();
       }
+      this.collection[nameOrMember] = member;
       if (member.on && member.off) {
-        return this.listenTo(member, "all", (function(_this) {
+        this.listenTo(member, "all", (function(_this) {
           return function() {
             var args;
             args = Array.prototype.slice.call(arguments);
@@ -269,7 +276,12 @@
             return _this.trigger.apply(_this, args);
           };
         })(this));
+        return this.listenTo(member, "remove", _.partial(this.remove, nameOrMember));
       }
+    };
+
+    ViewCollection.prototype.remove = function(name) {
+      return delete this.collection[name];
     };
 
     ViewCollection.prototype.broadcastOn = function(event, callback) {

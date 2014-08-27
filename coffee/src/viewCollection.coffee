@@ -5,17 +5,22 @@ class Traction.ViewCollection
     @collection = {}
 
   add: (nameOrMember, member) ->
-    if member
-      @collection[nameOrMember] = member
-    else
+    unless member
       member = nameOrMember
-      @collection[_.uniqueId()] = member
+      nameOrMember = _.uniqueId()
+
+    @collection[nameOrMember] = member
 
     if member.on and member.off
       @listenTo member, "all", =>
         args = Array.prototype.slice.call(arguments)
         args = [args[0], member].concat(args[1..-1])
         @trigger.apply(@, args)
+
+      @listenTo member, "remove", _.partial(@remove, nameOrMember)
+
+  remove: (name) ->
+    delete @collection[name]
 
   broadcastOn: (event, callback) ->
     @listenTo @, event, (triggerer) =>

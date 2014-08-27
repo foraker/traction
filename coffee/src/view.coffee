@@ -40,10 +40,12 @@ class Traction.View extends Backbone.View
     super
     @children.each (child) -> child.delegateEvents()
 
-  remove: ->
+  remove: (options = {}) ->
+    @trigger("remove", @) unless options.silent is true
     super
     @renderer.destroy?()
     @children.each (child) -> child.remove()
+    @invokeCallbacks("after:remove")
 
   invokeCallbacks: (event) ->
     for callback in @_callbacks[event]
@@ -55,6 +57,7 @@ class Traction.View extends Backbone.View
     @_callbacks = {
       "after:initialize": []
       "after:render":     []
+      "after:remove":     []
     }
 
     for event, callbacks of (@callbacks || {})
