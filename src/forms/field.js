@@ -12,7 +12,7 @@
 
     Field.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
 
-    Field.prototype.className = "field";
+    Field.prototype.className = Traction.config.field_class_name;
 
     Field.prototype.initialize = function(options) {
       this.options = _.extend(this._defaults(), {

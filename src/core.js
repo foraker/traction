@@ -7,7 +7,8 @@
     Rails: {},
     Forms: {},
     config: {
-      templatePath: "templates"
+      templatePath: "templates",
+      field_class_name: "field"
     }
   };
 

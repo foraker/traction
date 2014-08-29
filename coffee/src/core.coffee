@@ -6,4 +6,5 @@ window.Traction =
   Forms:           {}
   config: {
     templatePath: "templates"
+    field_class_name: "field"
   }

@@ -5,7 +5,7 @@ class Traction.Forms.Field extends Backbone.View
     </label>
   """
 
-  className: "field"
+  className: Traction.config.field_class_name
 
   initialize: (options) ->
     @options = _.extend(
