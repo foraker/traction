@@ -8,7 +8,10 @@
     Forms: {},
     config: {
       templatePath: "templates",
-      field_class_name: "field"
+      fieldClassName: "field",
+      fieldWithErrorsClass: "error",
+      inlineErrorsClass: "inline-errors",
+      formatters: {}
     }
   };
 

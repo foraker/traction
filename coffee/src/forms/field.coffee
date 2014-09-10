@@ -5,7 +5,7 @@ class Traction.Forms.Field extends Backbone.View
     </label>
   """
 
-  className: Traction.config.field_class_name
+  className: -> Traction.config.fieldClassName
 
   initialize: (options) ->
     @options = _.extend(
@@ -13,6 +13,11 @@ class Traction.Forms.Field extends Backbone.View
       placeholder: options.label || ''
       options
     )
+
+    @classConfig = {
+      errorWrapper: Traction.config.fieldWithErrorsClass
+      inlineErrors: Traction.config.inlineErrorsClass
+    }
 
     @_bind() if @model
 
@@ -32,8 +37,8 @@ class Traction.Forms.Field extends Backbone.View
     @
 
   renderErrors: (messages) ->
-    @$el.addClass("error")
-      .append("<span class=\"inline-errors\">#{messages.join(", ")}</span>")
+    @$el.addClass(@classConfig.errorWrapper)
+      .append("<span class=\"#{@classConfig.inlineErrors}\">#{messages.join(", ")}</span>")
 
   disable: ->
     @options.disabled = true
@@ -57,8 +62,8 @@ class Traction.Forms.Field extends Backbone.View
     @clearErrors()
 
   clearErrors: ->
-    @$el.removeClass("error")
-    @$(".inline-errors").remove()
+    @$el.removeClass(@classConfig.errorWrapper)
+    @$(".#{@classConfig.inlineErrors}").remove()
 
   rerenderErrors: (messages) ->
     @clearErrors()

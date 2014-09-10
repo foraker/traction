@@ -10,14 +10,20 @@
       return Field.__super__.constructor.apply(this, arguments);
     }
 
-    Field.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
+    Field.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i class='required-icon'>*</i><% } %> <%= options.label %>\n</label>");
 
-    Field.prototype.className = Traction.config.field_class_name;
+    Field.prototype.className = function() {
+      return Traction.config.fieldClassName;
+    };
 
     Field.prototype.initialize = function(options) {
       this.options = _.extend(this._defaults(), {
         placeholder: options.label || ''
       }, options);
+      this.classConfig = {
+        errorWrapper: Traction.config.fieldWithErrorsClass,
+        inlineErrors: Traction.config.inlineErrorsClass
+      };
       if (this.model) {
         return this._bind();
       }
@@ -47,7 +53,7 @@
     };
 
     Field.prototype.renderErrors = function(messages) {
-      return this.$el.addClass("error").append("<span class=\"inline-errors\">" + (messages.join(", ")) + "</span>");
+      return this.$el.addClass(this.classConfig.errorWrapper).append("<span class=\"" + this.classConfig.inlineErrors + "\">" + (messages.join(", ")) + "</span>");
     };
 
     Field.prototype.disable = function() {
@@ -78,8 +84,8 @@
     };
 
     Field.prototype.clearErrors = function() {
-      this.$el.removeClass("error");
-      return this.$(".inline-errors").remove();
+      this.$el.removeClass(this.classConfig.errorWrapper);
+      return this.$("." + this.classConfig.inlineErrors).remove();
     };
 
     Field.prototype.rerenderErrors = function(messages) {
