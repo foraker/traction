@@ -7,7 +7,11 @@
     Rails: {},
     Forms: {},
     config: {
-      templatePath: "templates"
+      templatePath: "templates",
+      fieldClassName: "field",
+      fieldWithErrorsClass: "error",
+      inlineErrorsClass: "inline-errors",
+      formatters: {}
     }
   };
 
@@ -84,10 +88,109 @@
 
     _.extend(Model.prototype, Traction.ComputedAttributes);
 
+    Model.prototype.associations = {};
+
     function Model() {
       Model.__super__.constructor.apply(this, arguments);
       this._assignComputedAttributes();
     }
+
+    Model.prototype.toggle = function(attribute) {
+      return this.set(attribute, !this.get(attribute));
+    };
+
+    Model.prototype.set = function(key, value, options) {
+      var newAttributes;
+      if (typeof key === "object") {
+        newAttributes = _.clone(key);
+        options = value;
+      } else {
+        newAttributes = {};
+        newAttributes[key] = value;
+      }
+      this._setAssociations(newAttributes, options || {});
+      return Model.__super__.set.call(this, newAttributes, options);
+    };
+
+    Model.prototype.url = function() {
+      return this.get("url") || Model.__super__.url.apply(this, arguments);
+    };
+
+    Model.prototype._setAssociations = function(attributes, options) {
+      var associationName, isDirty, klass, newValue, previousValue, urlRoot, _ref, _results;
+      _ref = this.associations;
+      _results = [];
+      for (associationName in _ref) {
+        klass = _ref[associationName];
+        newValue = attributes[associationName];
+        if (previousValue = this.get(associationName)) {
+          if (!(associationName in attributes)) {
+            continue;
+          }
+          isDirty = this._updateAssociation(klass, associationName, newValue);
+          if (isDirty && !options.silent) {
+            this.trigger("change:" + associationName, previousValue);
+          }
+        } else {
+          this._createAssociation(klass, associationName, newValue);
+        }
+        delete attributes[associationName];
+        if (urlRoot = attributes["" + associationName + "_url"]) {
+          _results.push(this.get(associationName).url = urlRoot);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    Model.prototype._createAssociation = function(klass, name, newValue) {
+      if (newValue instanceof klass) {
+        return this.attributes[name] = newValue;
+      } else {
+        newValue = new klass(newValue);
+        return this.attributes[name] = newValue;
+      }
+    };
+
+    Model.prototype._updateAssociation = function(klass, name, newValue) {
+      var dirtyCheck, isDirty;
+      isDirty = false;
+      dirtyCheck = (function(_this) {
+        return function(cb) {
+          var callback;
+          callback = function() {
+            return isDirty = true;
+          };
+          _this.get(name).on("change add remove", callback);
+          cb();
+          return _this.get(name).off("change add remove", callback);
+        };
+      })(this);
+      if (newValue instanceof klass || !newValue) {
+        if (this._isCollection(this.get(name)) && this._isCollection(newValue)) {
+          dirtyCheck((function(_this) {
+            return function() {
+              return _this.attributes[name].set(newValue.models);
+            };
+          })(this));
+        } else {
+          isDirty = newValue !== this.get(name);
+          this.attributes[name] = newValue;
+        }
+      } else {
+        dirtyCheck((function(_this) {
+          return function() {
+            return _this.get(name).set(newValue);
+          };
+        })(this));
+      }
+      return isDirty;
+    };
+
+    Model.prototype._isCollection = function(collection) {
+      return collection != null ? collection.models : void 0;
+    };
 
     return Model;
 
@@ -127,8 +230,9 @@
     __extends(View, _super);
 
     function View(options) {
-      this.children = new Traction.ViewCollection();
       this._initializeCallbacks();
+      this.invokeCallbacks("before:initialize");
+      this.children = new Traction.ViewCollection();
       if (this.decorator) {
         options.model = this.buildDecorator(options.model);
       }
@@ -136,6 +240,13 @@
       this.renderer = this.buildRenderer(options || {});
       this.invokeCallbacks("after:initialize");
     }
+
+    View.prototype.setElement = function() {
+      View.__super__.setElement.apply(this, arguments);
+      return this.renderer = this.buildRenderer({
+        el: this.el
+      });
+    };
 
     View.prototype.buildRenderer = function(options) {
       if (this.template) {
@@ -178,6 +289,7 @@
     };
 
     View.prototype.render = function() {
+      this.invokeCallbacks("before:render");
       this.children.render();
       this.renderer.call({
         bindTo: this.model,
@@ -196,13 +308,15 @@
 
     View.prototype.remove = function() {
       var _base;
+      this.invokeCallbacks("before:remove");
       View.__super__.remove.apply(this, arguments);
       if (typeof (_base = this.renderer).destroy === "function") {
         _base.destroy();
       }
-      return this.children.each(function(child) {
+      this.children.each(function(child) {
         return child.remove();
       });
+      return this.invokeCallbacks("after:remove");
     };
 
     View.prototype.invokeCallbacks = function(event) {
@@ -219,8 +333,12 @@
     View.prototype._initializeCallbacks = function() {
       var callbacks, event, _ref, _results;
       this._callbacks = {
+        "before:initialize": [],
         "after:initialize": [],
-        "after:render": []
+        "before:render": [],
+        "after:render": [],
+        "before:remove": [],
+        "after:remove": []
       };
       _ref = this.callbacks || {};
       _results = [];
@@ -344,6 +462,9 @@
       return string.toUpperCase();
     },
     append: function(string, append) {
+      return string + append;
+    },
+    prepend: function(string, append) {
       return string + append;
     },
     nonBreaking: function(string) {
@@ -648,14 +769,26 @@
 
     FormattedContentBinding.prototype._callFormattingFunction = function(formatter) {
       var args, formattingFunction, _ref;
-      _ref = formatter.split(":"), formatter = _ref[0], args = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
-      if (formattingFunction = Traction.TemplateHelpers.Formatting[formatter]) {
+      _ref = this._extractArgs(formatter), formatter = _ref[0], args = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
+      if (formattingFunction = this._formatters()[formatter]) {
         return function(content) {
           return formattingFunction.apply(this, [content].concat(args));
         };
       } else {
         throw "Can't find formatter: " + formatter;
       }
+    };
+
+    FormattedContentBinding.prototype._extractArgs = function(formatter) {
+      var reversed;
+      reversed = _.str.reverse(formatter).split(/:(?!\\)/).reverse();
+      return _.map(reversed, function(substring) {
+        return _.str.reverse(substring).replace(/\\:/g, ':');
+      });
+    };
+
+    FormattedContentBinding.prototype._formatters = function() {
+      return _.extend(Traction.TemplateHelpers.Formatting, Traction.config.formatters);
     };
 
     return FormattedContentBinding;
@@ -760,8 +893,6 @@
       return Model.__super__.constructor.apply(this, arguments);
     }
 
-    Model.prototype.associations = {};
-
     Model.prototype.initialize = function() {
       if (!this._isBaseClass()) {
         this.paramRoot || (this.paramRoot = this._inferParamRoot());
@@ -769,30 +900,9 @@
       return this.on("error", this.parseErrors, this);
     };
 
-    Model.prototype.set = function(key, value, options) {
-      var newAttributes;
-      if (typeof key === "object") {
-        newAttributes = _.clone(key);
-        options = value;
-      } else {
-        newAttributes = {};
-        newAttributes[key] = value;
-      }
-      this._setAssociations(newAttributes, options || {});
-      return Model.__super__.set.call(this, newAttributes, options);
-    };
-
     Model.prototype.parseErrors = function(self, response) {
       var _ref;
       return this.errors = (_ref = $.parseJSON(response.responseText)) != null ? _ref.errors : void 0;
-    };
-
-    Model.prototype.toggle = function(attribute) {
-      return this.set(attribute, !this.get(attribute));
-    };
-
-    Model.prototype.url = function() {
-      return this.get("url") || Model.__super__.url.apply(this, arguments);
     };
 
     Model.prototype.toJSON = function() {
@@ -820,82 +930,6 @@
 
     Model.prototype._isBaseClass = function() {
       return this.constructor === Traction.Rails.Model;
-    };
-
-    Model.prototype._setAssociations = function(attributes, options) {
-      var associationName, isDirty, klass, newValue, previousValue, urlRoot, _ref, _results;
-      _ref = this.associations;
-      _results = [];
-      for (associationName in _ref) {
-        klass = _ref[associationName];
-        newValue = attributes[associationName];
-        if (previousValue = this.get(associationName)) {
-          if (!(associationName in attributes)) {
-            continue;
-          }
-          isDirty = this._updateAssociation(klass, associationName, newValue);
-          if (isDirty && !options.silent) {
-            this.trigger("change:" + associationName, previousValue);
-          }
-        } else {
-          this._createAssociation(klass, associationName, newValue);
-        }
-        delete attributes[associationName];
-        if (urlRoot = attributes["" + associationName + "_url"]) {
-          _results.push(this.get(associationName).url = urlRoot);
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    };
-
-    Model.prototype._createAssociation = function(klass, name, newValue) {
-      if (newValue instanceof klass) {
-        return this.attributes[name] = newValue;
-      } else {
-        newValue = new klass(newValue);
-        return this.attributes[name] = newValue;
-      }
-    };
-
-    Model.prototype._updateAssociation = function(klass, name, newValue) {
-      var dirtyCheck, isDirty;
-      isDirty = false;
-      dirtyCheck = (function(_this) {
-        return function(cb) {
-          var callback;
-          callback = function() {
-            return isDirty = true;
-          };
-          _this.get(name).on("change add remove", callback);
-          cb();
-          return _this.get(name).off("change add remove", callback);
-        };
-      })(this);
-      if (newValue instanceof klass || !newValue) {
-        if (this._isCollection(this.get(name)) && this._isCollection(newValue)) {
-          dirtyCheck((function(_this) {
-            return function() {
-              return _this.attributes[name].set(newValue.models);
-            };
-          })(this));
-        } else {
-          isDirty = newValue !== this.get(name);
-          this.attributes[name] = newValue;
-        }
-      } else {
-        dirtyCheck((function(_this) {
-          return function() {
-            return _this.get(name).set(newValue);
-          };
-        })(this));
-      }
-      return isDirty;
-    };
-
-    Model.prototype._isCollection = function(collection) {
-      return collection != null ? collection.models : void 0;
     };
 
     return Model;
@@ -944,14 +978,20 @@
       return Field.__super__.constructor.apply(this, arguments);
     }
 
-    Field.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i>*</i><% } %> <%= options.label %>\n</label>");
+    Field.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i class='required-icon'>*</i><% } %> <%= options.label %>\n</label>");
 
-    Field.prototype.className = "field";
+    Field.prototype.className = function() {
+      return Traction.config.fieldClassName;
+    };
 
     Field.prototype.initialize = function(options) {
       this.options = _.extend(this._defaults(), {
         placeholder: options.label || ''
       }, options);
+      this.classConfig = {
+        errorWrapper: Traction.config.fieldWithErrorsClass,
+        inlineErrors: Traction.config.inlineErrorsClass
+      };
       if (this.model) {
         return this._bind();
       }
@@ -981,7 +1021,7 @@
     };
 
     Field.prototype.renderErrors = function(messages) {
-      return this.$el.addClass("error").append("<span class=\"inline-errors\">" + (messages.join(", ")) + "</span>");
+      return this.$el.addClass(this.classConfig.errorWrapper).append("<span class=\"" + this.classConfig.inlineErrors + "\">" + (messages.join(", ")) + "</span>");
     };
 
     Field.prototype.disable = function() {
@@ -1012,8 +1052,8 @@
     };
 
     Field.prototype.clearErrors = function() {
-      this.$el.removeClass("error");
-      return this.$(".inline-errors").remove();
+      this.$el.removeClass(this.classConfig.errorWrapper);
+      return this.$("." + this.classConfig.inlineErrors).remove();
     };
 
     Field.prototype.rerenderErrors = function(messages) {
@@ -1281,9 +1321,9 @@
         return function(child, attribute) {
           var errors, _ref;
           if (errors = (_ref = _this.model.errors) != null ? _ref[attribute] : void 0) {
-            return child.rerenderErrors(errors);
+            return typeof child.rerenderErrors === "function" ? child.rerenderErrors(errors) : void 0;
           } else {
-            return child.clearErrors();
+            return typeof child.clearErrors === "function" ? child.clearErrors() : void 0;
           }
         };
       })(this));
