@@ -62,7 +62,7 @@
             required: true
           }).render();
           label = field.$("label").html().replace(/\n/g, "").trim();
-          return expect(label).toBe("<i>*</i> First name");
+          return expect(label).toBe("<i class=\"required-icon\">*</i> First name");
         });
       });
       return describe("a disabled input", function() {

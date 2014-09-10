@@ -1,7 +1,7 @@
 class Traction.Forms.Field extends Backbone.View
   labelTemplate: _.template """
     <label for="<%= options.id %>">
-      <% if(options.required) { %><i>*</i><% } %> <%= options.label %>
+      <% if(options.required) { %><i class='required-icon'>*</i><% } %> <%= options.label %>
     </label>
   """
 

@@ -39,7 +39,7 @@ jasmine.sharedExamplesFor "a field", (options) ->
       it "renders an asterisk in the label", ->
         field = options.createInstance({required: true}).render()
         label = field.$("label").html().replace(/\n/g, "").trim()
-        expect(label).toBe("<i>*</i> First name")
+        expect(label).toBe("<i class=\"required-icon\">*</i> First name")
 
     describe "a disabled input", ->
       it "is not disabled by default", ->

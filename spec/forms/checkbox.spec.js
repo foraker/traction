@@ -56,7 +56,7 @@
             required: true
           }).render();
           label = field.$("label").html().replace(/\n/g, "").trim();
-          return expect(label).toBe("<i>*</i> Active");
+          return expect(label).toBe("<i class=\"required-icon\">*</i> Active");
         });
       });
     });

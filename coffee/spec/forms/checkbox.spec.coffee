@@ -39,7 +39,7 @@ describe "Traction.Forms.Checkbox", ->
       it "renders an asterisk in the label", ->
         field = createInstance({required: true}).render()
         label = field.$("label").html().replace(/\n/g, "").trim()
-        expect(label).toBe("<i>*</i> Active")
+        expect(label).toBe("<i class=\"required-icon\">*</i> Active")
 
   describe "#renderErrors", ->
     it "adds a class of 'errors'", ->
