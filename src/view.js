@@ -7,8 +7,9 @@
     __extends(View, _super);
 
     function View(options) {
-      this.children = new Traction.ViewCollection();
       this._initializeCallbacks();
+      this.invokeCallbacks("before:initialize");
+      this.children = new Traction.ViewCollection();
       if (this.decorator) {
         options.model = this.buildDecorator(options.model);
       }
@@ -16,6 +17,13 @@
       this.renderer = this.buildRenderer(options || {});
       this.invokeCallbacks("after:initialize");
     }
+
+    View.prototype.setElement = function() {
+      View.__super__.setElement.apply(this, arguments);
+      return this.renderer = this.buildRenderer({
+        el: this.el
+      });
+    };
 
     View.prototype.buildRenderer = function(options) {
       if (this.template) {
@@ -58,6 +66,7 @@
     };
 
     View.prototype.render = function() {
+      this.invokeCallbacks("before:render");
       this.children.render();
       this.renderer.call({
         bindTo: this.model,
@@ -76,13 +85,15 @@
 
     View.prototype.remove = function() {
       var _base;
+      this.invokeCallbacks("before:remove");
       View.__super__.remove.apply(this, arguments);
       if (typeof (_base = this.renderer).destroy === "function") {
         _base.destroy();
       }
-      return this.children.each(function(child) {
+      this.children.each(function(child) {
         return child.remove();
       });
+      return this.invokeCallbacks("after:remove");
     };
 
     View.prototype.invokeCallbacks = function(event) {
@@ -99,8 +110,12 @@
     View.prototype._initializeCallbacks = function() {
       var callbacks, event, _ref, _results;
       this._callbacks = {
+        "before:initialize": [],
         "after:initialize": [],
-        "after:render": []
+        "before:render": [],
+        "after:render": [],
+        "before:remove": [],
+        "after:remove": []
       };
       _ref = this.callbacks || {};
       _results = [];

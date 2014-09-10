@@ -1,11 +1,17 @@
 class Traction.View extends Backbone.View
   constructor: (options) ->
-    @children = new Traction.ViewCollection()
     @_initializeCallbacks()
+
+    @invokeCallbacks("before:initialize")
+    @children = new Traction.ViewCollection()
     options.model = @buildDecorator(options.model) if @decorator
     super
     @renderer = @buildRenderer(options || {})
     @invokeCallbacks("after:initialize")
+
+  setElement: ->
+    super
+    @renderer = @buildRenderer(el: @el)
 
   buildRenderer: (options) ->
     if @template
@@ -31,6 +37,7 @@ class Traction.View extends Backbone.View
     @listenTo target, event, callback
 
   render: ->
+    @invokeCallbacks("before:render")
     @children.render()
     @renderer.call(bindTo: @model, children: @children)
     @invokeCallbacks("after:render")
@@ -41,9 +48,11 @@ class Traction.View extends Backbone.View
     @children.each (child) -> child.delegateEvents()
 
   remove: ->
+    @invokeCallbacks("before:remove")
     super
     @renderer.destroy?()
     @children.each (child) -> child.remove()
+    @invokeCallbacks("after:remove")
 
   invokeCallbacks: (event) ->
     for callback in @_callbacks[event]
@@ -53,8 +62,12 @@ class Traction.View extends Backbone.View
 
   _initializeCallbacks: ->
     @_callbacks = {
+      "before:initialize": []
       "after:initialize": []
+      "before:render":     []
       "after:render":     []
+      "before:remove":     []
+      "after:remove":     []
     }
 
     for event, callbacks of (@callbacks || {})
