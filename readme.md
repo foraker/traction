@@ -20,6 +20,7 @@ Utilities
   - [Delegation](./docs/views/delegation.md)
 
 Rails Support
+  - Parameter whitelisting
 
 ## Dependencies
 
