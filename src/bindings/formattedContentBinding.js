@@ -27,14 +27,26 @@
 
     FormattedContentBinding.prototype._callFormattingFunction = function(formatter) {
       var args, formattingFunction, _ref;
-      _ref = formatter.split(":"), formatter = _ref[0], args = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
-      if (formattingFunction = Traction.TemplateHelpers.Formatting[formatter]) {
+      _ref = this._extractArgs(formatter), formatter = _ref[0], args = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
+      if (formattingFunction = this._formatters()[formatter]) {
         return function(content) {
           return formattingFunction.apply(this, [content].concat(args));
         };
       } else {
         throw "Can't find formatter: " + formatter;
       }
+    };
+
+    FormattedContentBinding.prototype._extractArgs = function(formatter) {
+      var reversed;
+      reversed = _.str.reverse(formatter).split(/:(?!\\)/).reverse();
+      return _.map(reversed, function(substring) {
+        return _.str.reverse(substring).replace(/\\:/g, ':');
+      });
+    };
+
+    FormattedContentBinding.prototype._formatters = function() {
+      return _.extend(Traction.TemplateHelpers.Formatting, Traction.config.formatters);
     };
 
     return FormattedContentBinding;

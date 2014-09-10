@@ -8,6 +8,9 @@ Traction.TemplateHelpers.Formatting = {
   append: (string, append) ->
     string + append
 
+  prepend: (string, append) ->
+    string + append
+
   nonBreaking: (string) ->
     if string then string.replace(/\s/g, "&nbsp;") else "&nbsp;"
 

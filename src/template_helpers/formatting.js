@@ -10,6 +10,9 @@
     append: function(string, append) {
       return string + append;
     },
+    prepend: function(string, append) {
+      return string + append;
+    },
     nonBreaking: function(string) {
       if (string) {
         return string.replace(/\s/g, "&nbsp;");
