@@ -39,9 +39,9 @@
         return function(child, attribute) {
           var errors, _ref;
           if (errors = (_ref = _this.model.errors) != null ? _ref[attribute] : void 0) {
-            return child.rerenderErrors(errors);
+            return typeof child.rerenderErrors === "function" ? child.rerenderErrors(errors) : void 0;
           } else {
-            return child.clearErrors();
+            return typeof child.clearErrors === "function" ? child.clearErrors() : void 0;
           }
         };
       })(this));

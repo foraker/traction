@@ -19,9 +19,9 @@ class Traction.Forms.Form
   renderErrors: ->
     @children.each (child, attribute) =>
       if errors = @model.errors?[attribute]
-        child.rerenderErrors(errors)
+        child.rerenderErrors?(errors)
       else
-        child.clearErrors()
+        child.clearErrors?()
 
   clearErrors: ->
     @children.each (input) -> input.clearErrors?()
