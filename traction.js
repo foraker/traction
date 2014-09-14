@@ -11,7 +11,8 @@
       fieldClassName: "field",
       fieldWithErrorsClass: "error",
       inlineErrorsClass: "inline-errors",
-      formatters: {}
+      formatters: {},
+      templateHelpers: {}
     }
   };
 
@@ -686,9 +687,9 @@
     };
 
     TemplateStrategy.prototype._defaultTemplateOptions = function() {
-      return {
+      return _.extend({
         outlet: this.buildOutlet
-      };
+      }, Traction.config.templateHelpers);
     };
 
     return TemplateStrategy;
@@ -1066,7 +1067,8 @@
     };
 
     Field.prototype.commit = function() {
-      return this.model.set(this.options.attribute, this.get());
+      this.model.set(this.options.attribute, this.get());
+      return this.trigger("commit");
     };
 
     Field.prototype.applyAutoCommit = function() {
