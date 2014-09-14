@@ -52,3 +52,7 @@ model.get("email") // "email@example.com"
 ```
 
 ## Configuration
+
+## Events
+
+- "commit" - called when a form field is commit to the model

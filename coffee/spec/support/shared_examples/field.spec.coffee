@@ -132,6 +132,13 @@ jasmine.sharedExamplesFor "a field", (options) ->
       field.commit()
       expect(model.get("first_name")).toBe("Crenst")
 
+    it "triggers an event", ->
+      field = options.createInstance().render()
+      spyOn(field, "trigger")
+      field.set("Crenst")
+      field.commit()
+      expect(field.trigger).toHaveBeenCalledWith("commit")
+
   describe "model syncing", ->
     it "syncs the input with the model", ->
       model = new Backbone.Model({first_name: "Jobin"})

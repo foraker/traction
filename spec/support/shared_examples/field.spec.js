@@ -182,7 +182,7 @@
       });
     });
     describe("#commit", function() {
-      return it("applies the input value to the model", function() {
+      it("applies the input value to the model", function() {
         var field, model;
         model = new Backbone.Model({
           first_name: "Jobin"
@@ -193,6 +193,14 @@
         field.set("Crenst");
         field.commit();
         return expect(model.get("first_name")).toBe("Crenst");
+      });
+      return it("triggers an event", function() {
+        var field;
+        field = options.createInstance().render();
+        spyOn(field, "trigger");
+        field.set("Crenst");
+        field.commit();
+        return expect(field.trigger).toHaveBeenCalledWith("commit");
       });
     });
     return describe("model syncing", function() {
