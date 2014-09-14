@@ -10,4 +10,5 @@ window.Traction =
     fieldWithErrorsClass: "error"
     inlineErrorsClass: "inline-errors"
     formatters: {}
+    templateHelpers: {}
   }

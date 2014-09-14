@@ -52,9 +52,9 @@
     };
 
     TemplateStrategy.prototype._defaultTemplateOptions = function() {
-      return {
+      return _.extend({
         outlet: this.buildOutlet
-      };
+      }, Traction.config.templateHelpers);
     };
 
     return TemplateStrategy;

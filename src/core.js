@@ -11,7 +11,8 @@
       fieldClassName: "field",
       fieldWithErrorsClass: "error",
       inlineErrorsClass: "inline-errors",
-      formatters: {}
+      formatters: {},
+      templateHelpers: {}
     }
   };
 

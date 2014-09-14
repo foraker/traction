@@ -32,4 +32,4 @@ class Traction.Rendering.TemplateStrategy extends Traction.Rendering.NodeStrateg
     @template _.extend(options || {}, @_defaultTemplateOptions())
 
   _defaultTemplateOptions: ->
-    {outlet: @buildOutlet}
+    _.extend {outlet: @buildOutlet}, Traction.config.templateHelpers
