@@ -59,9 +59,9 @@
       });
     };
 
-    Form.prototype.commit = function() {
+    Form.prototype.commit = function(options) {
       return this.children.each(function(input) {
-        return typeof input.commit === "function" ? input.commit() : void 0;
+        return typeof input.commit === "function" ? input.commit(options) : void 0;
       });
     };
 

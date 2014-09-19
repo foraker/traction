@@ -29,8 +29,8 @@ class Traction.Forms.Form
   clear: ->
     @children.each (input) -> input.clear?()
 
-  commit: ->
-    @children.each (input) -> input.commit?()
+  commit: (options) ->
+    @children.each (input) -> input.commit?(options)
 
   reset: ->
     @children.each (input) -> input.reset?()

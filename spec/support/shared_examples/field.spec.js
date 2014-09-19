@@ -195,12 +195,15 @@
         return expect(model.get("first_name")).toBe("Crenst");
       });
       return it("triggers an event", function() {
-        var field;
-        field = options.createInstance().render();
+        var field, model;
+        model = new Backbone.Model();
+        field = options.createInstance({
+          model: model
+        }).render();
         spyOn(field, "trigger");
         field.set("Crenst");
         field.commit();
-        return expect(field.trigger).toHaveBeenCalledWith("commit");
+        return expect(field.trigger).toHaveBeenCalledWith("commit", model);
       });
     });
     return describe("model syncing", function() {

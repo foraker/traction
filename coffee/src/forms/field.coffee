@@ -72,9 +72,9 @@ class Traction.Forms.Field extends Backbone.View
   reset: ->
     @set(@model.get(@options.attribute))
 
-  commit: ->
+  commit: (options = {}) ->
     @model.set(@options.attribute, @get())
-    @trigger("commit")
+    @trigger("commit", @model) unless options?.silent
 
   applyAutoCommit: ->
     @commit() if @options.autoCommit

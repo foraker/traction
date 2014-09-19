@@ -97,9 +97,14 @@
       return this.set(this.model.get(this.options.attribute));
     };
 
-    Field.prototype.commit = function() {
+    Field.prototype.commit = function(options) {
+      if (options == null) {
+        options = {};
+      }
       this.model.set(this.options.attribute, this.get());
-      return this.trigger("commit");
+      if (!(options != null ? options.silent : void 0)) {
+        return this.trigger("commit", this.model);
+      }
     };
 
     Field.prototype.applyAutoCommit = function() {
