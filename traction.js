@@ -906,6 +906,19 @@
       return this.errors = (_ref = $.parseJSON(response.responseText)) != null ? _ref.errors : void 0;
     };
 
+    Model.prototype.patch = function() {
+      var attrs;
+      if (this.paramRoot) {
+        attrs = {};
+        attrs[this.paramRoot] = this.changedAttributes();
+      } else {
+        attrs = this.changedAttributes();
+      }
+      return this.sync('update', this, {
+        attrs: attrs
+      });
+    };
+
     Model.prototype.toJSON = function() {
       var attribute, json, _i, _len, _ref;
       if (this.persists) {
@@ -1066,9 +1079,14 @@
       return this.set(this.model.get(this.options.attribute));
     };
 
-    Field.prototype.commit = function() {
+    Field.prototype.commit = function(options) {
+      if (options == null) {
+        options = {};
+      }
       this.model.set(this.options.attribute, this.get());
-      return this.trigger("commit");
+      if (!(options != null ? options.silent : void 0)) {
+        return this.trigger("commit", this.model);
+      }
     };
 
     Field.prototype.applyAutoCommit = function() {
@@ -1343,9 +1361,9 @@
       });
     };
 
-    Form.prototype.commit = function() {
+    Form.prototype.commit = function(options) {
       return this.children.each(function(input) {
-        return typeof input.commit === "function" ? input.commit() : void 0;
+        return typeof input.commit === "function" ? input.commit(options) : void 0;
       });
     };
 
