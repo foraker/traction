@@ -38,3 +38,26 @@ describe "Rails model", ->
 
         model = new TestModel(name: "name", email: "email@example")
         expect(model.toJSON()).toEqual {name: "name"}
+
+  describe "#patch", ->
+    beforeEach ->
+      @instance = new Traction.Rails.Model(first_name: "initial first", last_name: "initial last")
+      @instance.changed = false
+      spyOn(@instance, "sync")
+
+    it "only persists changed attributes", ->
+      @instance.set(last_name: "updated_last")
+      @instance.patch()
+      expect(@instance.sync).toHaveBeenCalledWith('update', @instance, attrs: {
+        last_name: "updated_last"
+      })
+
+    it "respects a paramRoot", ->
+      @instance.paramRoot = "user"
+      @instance.set(last_name: "updated_last")
+      @instance.patch()
+      expect(@instance.sync).toHaveBeenCalledWith('update', @instance, attrs: {
+        user: {
+          last_name: "updated_last"
+        }
+      })

@@ -6,6 +6,15 @@ class Traction.Rails.Model extends Traction.Model
   parseErrors: (self, response) ->
     @errors = $.parseJSON(response.responseText)?.errors
 
+  patch: ->
+    if @paramRoot
+      attrs = {}
+      attrs[@paramRoot] = @changedAttributes()
+    else
+      attrs = @changedAttributes()
+
+    @sync('update', @, attrs: attrs)
+
   toJSON: ->
     if @persists
       json = {}

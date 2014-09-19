@@ -99,6 +99,41 @@
         });
       });
     });
+    return describe("#patch", function() {
+      beforeEach(function() {
+        this.instance = new Traction.Rails.Model({
+          first_name: "initial first",
+          last_name: "initial last"
+        });
+        this.instance.changed = false;
+        return spyOn(this.instance, "sync");
+      });
+      it("only persists changed attributes", function() {
+        this.instance.set({
+          last_name: "updated_last"
+        });
+        this.instance.patch();
+        return expect(this.instance.sync).toHaveBeenCalledWith('update', this.instance, {
+          attrs: {
+            last_name: "updated_last"
+          }
+        });
+      });
+      return it("respects a paramRoot", function() {
+        this.instance.paramRoot = "user";
+        this.instance.set({
+          last_name: "updated_last"
+        });
+        this.instance.patch();
+        return expect(this.instance.sync).toHaveBeenCalledWith('update', this.instance, {
+          attrs: {
+            user: {
+              last_name: "updated_last"
+            }
+          }
+        });
+      });
+    });
   });
 
 }).call(this);

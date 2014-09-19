@@ -22,6 +22,19 @@
       return this.errors = (_ref = $.parseJSON(response.responseText)) != null ? _ref.errors : void 0;
     };
 
+    Model.prototype.patch = function() {
+      var attrs;
+      if (this.paramRoot) {
+        attrs = {};
+        attrs[this.paramRoot] = this.changedAttributes();
+      } else {
+        attrs = this.changedAttributes();
+      }
+      return this.sync('update', this, {
+        attrs: attrs
+      });
+    };
+
     Model.prototype.toJSON = function() {
       var attribute, json, _i, _len, _ref;
       if (this.persists) {
