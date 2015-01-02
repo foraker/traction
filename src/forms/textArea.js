@@ -12,12 +12,10 @@
 
     TextArea.prototype.inputTemplate = _.template("<textarea id=\"<%= options.id %>\" name=\"<%= options.name %>\" placeholder=\"<%= options.placeholder %>\"/>");
 
+    TextArea.prototype.inputSelector = "textarea";
+
     TextArea.prototype.events = {
       "change textarea": "applyAutoCommit"
-    };
-
-    TextArea.prototype._input = function() {
-      return this.input || (this.input = this.$("textarea"));
     };
 
     return TextArea;

@@ -8,6 +8,8 @@ class Traction.Forms.Select extends Traction.Forms.Field
     </select>
   """
 
+  inputSelector: "select"
+
   events:
     "change select": "applyAutoCommit"
 
@@ -27,9 +29,6 @@ class Traction.Forms.Select extends Traction.Forms.Field
 
   _firstOptionValue: ->
     @$("option:first").attr("value")
-
-  _input: ->
-    @input ||= @$("select")
 
   _renderInput: ->
     @$el.append @inputTemplate({options: @options})

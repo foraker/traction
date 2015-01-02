@@ -5,6 +5,8 @@ class Traction.Forms.Field extends Backbone.View
     </label>
   """
 
+  inputSelector: "input"
+
   className: -> Traction.config.fieldClassName
 
   initialize: (options) ->
@@ -88,7 +90,10 @@ class Traction.Forms.Field extends Backbone.View
     @stopListening(@model)
 
   _input: ->
-    @input ||= @$("input")
+    if @options.cache
+      @input ||= @$(@inputSelector)
+    else
+      @$(@inputSelector)
 
   _empty: ->
     @$el.empty()
@@ -105,7 +110,8 @@ class Traction.Forms.Field extends Backbone.View
 
   _defaults: (options) ->
     {
-      id:          @cid,
+      id:          @cid
       autoCommit:  true
       required:    false
+      cache:       true
     }

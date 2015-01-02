@@ -12,6 +12,8 @@
 
     Field.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i class='required-icon'>*</i><% } %> <%= options.label %>\n</label>");
 
+    Field.prototype.inputSelector = "input";
+
     Field.prototype.className = function() {
       return Traction.config.fieldClassName;
     };
@@ -122,7 +124,11 @@
     };
 
     Field.prototype._input = function() {
-      return this.input || (this.input = this.$("input"));
+      if (this.options.cache) {
+        return this.input || (this.input = this.$(this.inputSelector));
+      } else {
+        return this.$(this.inputSelector);
+      }
     };
 
     Field.prototype._empty = function() {
@@ -150,7 +156,8 @@
       return {
         id: this.cid,
         autoCommit: true,
-        required: false
+        required: false,
+        cache: true
       };
     };
 

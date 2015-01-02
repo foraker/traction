@@ -3,10 +3,8 @@ class Traction.Forms.TextArea extends Traction.Forms.Field
     <textarea id="<%= options.id %>" name="<%= options.name %>" placeholder="<%= options.placeholder %>"/>
   """
 
+  inputSelector: "textarea"
+
   events:
     "change textarea": "applyAutoCommit"
 
-  # Private
-
-  _input: ->
-    @input ||= @$("textarea")

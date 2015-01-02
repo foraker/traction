@@ -12,6 +12,8 @@
 
     Select.prototype.inputTemplate = _.template("<select id=\"<%= options.id %>\" name=\"<%= options.name %>\" <%= options.multiple %> >\n  <% if(options.includeBlank) { %><option value=\"\"><%= options.includeBlank %></option><% } %>\n  <% _.each(options.options, function(value, label){ %>\n    <option value=\"<%= value %>\"><%= label %></option>\n  <% }) %>\n</select>");
 
+    Select.prototype.inputSelector = "select";
+
     Select.prototype.events = {
       "change select": "applyAutoCommit"
     };
@@ -36,10 +38,6 @@
 
     Select.prototype._firstOptionValue = function() {
       return this.$("option:first").attr("value");
-    };
-
-    Select.prototype._input = function() {
-      return this.input || (this.input = this.$("select"));
     };
 
     Select.prototype._renderInput = function() {

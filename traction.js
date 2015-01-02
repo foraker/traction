@@ -994,6 +994,8 @@
 
     Field.prototype.labelTemplate = _.template("<label for=\"<%= options.id %>\">\n  <% if(options.required) { %><i class='required-icon'>*</i><% } %> <%= options.label %>\n</label>");
 
+    Field.prototype.inputSelector = "input";
+
     Field.prototype.className = function() {
       return Traction.config.fieldClassName;
     };
@@ -1104,7 +1106,11 @@
     };
 
     Field.prototype._input = function() {
-      return this.input || (this.input = this.$("input"));
+      if (this.options.cache) {
+        return this.input || (this.input = this.$(this.inputSelector));
+      } else {
+        return this.$(this.inputSelector);
+      }
     };
 
     Field.prototype._empty = function() {
@@ -1132,7 +1138,8 @@
       return {
         id: this.cid,
         autoCommit: true,
-        required: false
+        required: false,
+        cache: true
       };
     };
 
@@ -1178,12 +1185,10 @@
 
     TextArea.prototype.inputTemplate = _.template("<textarea id=\"<%= options.id %>\" name=\"<%= options.name %>\" placeholder=\"<%= options.placeholder %>\"/>");
 
+    TextArea.prototype.inputSelector = "textarea";
+
     TextArea.prototype.events = {
       "change textarea": "applyAutoCommit"
-    };
-
-    TextArea.prototype._input = function() {
-      return this.input || (this.input = this.$("textarea"));
     };
 
     return TextArea;
@@ -1204,6 +1209,8 @@
     }
 
     Select.prototype.inputTemplate = _.template("<select id=\"<%= options.id %>\" name=\"<%= options.name %>\" <%= options.multiple %> >\n  <% if(options.includeBlank) { %><option value=\"\"><%= options.includeBlank %></option><% } %>\n  <% _.each(options.options, function(value, label){ %>\n    <option value=\"<%= value %>\"><%= label %></option>\n  <% }) %>\n</select>");
+
+    Select.prototype.inputSelector = "select";
 
     Select.prototype.events = {
       "change select": "applyAutoCommit"
@@ -1229,10 +1236,6 @@
 
     Select.prototype._firstOptionValue = function() {
       return this.$("option:first").attr("value");
-    };
-
-    Select.prototype._input = function() {
-      return this.input || (this.input = this.$("select"));
     };
 
     Select.prototype._renderInput = function() {
