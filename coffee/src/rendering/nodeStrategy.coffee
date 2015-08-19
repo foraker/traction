@@ -32,4 +32,4 @@ class Traction.Rendering.NodeStrategy extends Backbone.View
 
   _emit: (event) ->
     eventNames = event.currentTarget.getAttribute("data-emit").split(" ")
-    @$el.trigger(eventName) for eventName in eventNames
+    @$el.trigger(eventName, event) for eventName in eventNames
